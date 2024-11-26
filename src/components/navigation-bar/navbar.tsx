@@ -1,9 +1,12 @@
 import { useState, useEffect, useRef, MouseEvent} from "react";
+import { useNavigate } from "react-router-dom";
 
 // import components
 import ProfileWidget from "./profileWidget";
 
 const Navbar = () => {
+    const navigate = useNavigate();
+
     const [isProfileHovered, setIsProfileHovered] = useState<boolean>(false);
     const [isWorldHovered, setIsWorldHovered] = useState<boolean>(false);
     const [isYourHomeHovered, setIsYourHomeHovered] = useState<boolean>(false);
@@ -18,6 +21,10 @@ const Navbar = () => {
         // console.log(showProfileWidget);
     };
 
+    const returnToHome = () => {
+        navigate("/");
+    };
+
     useEffect(() => {
         const handleOutsideMenuClick = (event: MouseEvent) => {
             if(profileWidgetRef.current && !profileWidgetRef.current.contains(event.target)){
@@ -28,12 +35,12 @@ const Navbar = () => {
         document.body.addEventListener("click", handleOutsideMenuClick);
 
         return () => document.body.removeEventListener("click", handleOutsideMenuClick);
-    },[showProfileWidget])
+    },[showProfileWidget]);
 
 
     return (
         <div className="flex justify-between mx-auto">
-            <a href="" className="flex items-center gap-1 space-x-2">
+            <a href="" className="flex items-center gap-1 space-x-2" onClick={returnToHome}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 -rotate-90">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
                 </svg>
@@ -46,7 +53,7 @@ const Navbar = () => {
                 onMouseEnter={() => setIsWidgetHovered(true)}
                 onMouseLeave={() => setIsWidgetHovered(false)}
                 >
-                <div className="border-r-2 pr-2">Anywhere</div>
+                <div className="border-r-2 px-2">Anywhere</div>
                 <div className="border-r-2 pr-4">Any week</div>
                 <div>Add guests</div>
 
