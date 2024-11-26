@@ -1,5 +1,8 @@
-import { useState} from "react";
+import { useState, ChangeEvent} from "react";
 import { Link } from "react-router-dom";
+
+//import components
+import { FormInput } from "./FormInput";
 
 const LoginForm = () => {
 
@@ -10,7 +13,7 @@ const LoginForm = () => {
 
   const {email, password} = formInputs;
 
-  const handleInputChange = (event) => {
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const {name, value} = event.target;
 
     setFormInputs({
@@ -35,8 +38,14 @@ const LoginForm = () => {
 
       <div className="w-[40%]">
         <form onSubmit={handleSubmit} className="flex flex-col items-center space-y-6">
-          <input className="py-4 rounded-lg w-full p-6 shadow-md outline-primary" type="text" name="email" placeholder="Email address" value={email} onChange={handleInputChange}/>
-          <input className="py-4 rounded-lg w-full p-6 shadow-md outline-primary" type="password" placeholder="Enter a password" value={password} onChange={handleInputChange}/>
+            <div className="w-full shadow-md rounded-lg pl-4">
+                <FormInput type="text" name="email" label="Email address" value={email} onChange={handleInputChange}/>
+            </div>
+          
+          <div className="w-full shadow-md rounded-lg pl-4">
+            <FormInput type="password" label="Password" value={password} onChange={handleInputChange}/>
+          </div>
+          
           <button className="w-[50%] rounded-full p-4 bg-primary text-white tracking-wide font-bold" type="submit">Login</button>
         </form>
       </div>

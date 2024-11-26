@@ -1,6 +1,9 @@
 import { useState, FormEvent, ChangeEvent} from "react";
 import { Link } from "react-router-dom";
 
+//import components
+import { FormInput } from "./FormInput";
+
 type RegisterFormInputs = {
   firstName: string;
   lastName: string;
@@ -108,35 +111,35 @@ const RegisterForm = () => {
         <form onSubmit={handleSubmit} className="flex flex-col items-center space-y-6">
 
           <div className="flex flex-col rounded-lg w-full h-full pl-4 shadow-md" >
-            <input className="outline-none h-full py-4" type="text" name="firstName" placeholder="First name" value={firstName} onChange={handleInputChange} />
+            <FormInput type="text" name="firstName" label="First name" value={firstName} onChange={handleInputChange} />
             {
               errors.firstName && <span className="text-red-500">{errors.firstName}</span>
             }
           </div>
 
           <div className="flex flex-col rounded-lg w-full h-full pl-4 shadow-md" >
-            <input className="outline-none h-full py-4" type="text" name="lastName" placeholder="Last name" value={lastName} onChange={handleInputChange} />
+            <FormInput type="text" name="lastName" label="Last name" value={lastName} onChange={handleInputChange} />
             {
               errors.lastName && <span className="text-red-500">{errors.lastName}</span>
             }
           </div>
 
           <div className="flex flex-col rounded-lg w-full h-full pl-4 shadow-md" >
-            <input className="outline-none h-full py-4" type="text" name="email" placeholder="Email address" value={email} onChange={handleInputChange}/>
+            <FormInput type="text" name="email" label="Email address" value={email} onChange={handleInputChange}/>
             {
               errors.email && <span className="text-red-500">{errors.email}</span>
             }
           </div>
 
           <div className="flex flex-col rounded-lg w-full h-full pl-4 shadow-md" >
-            <input className="outline-none h-full py-4" type="password" name="password" placeholder="Enter a password" value={password} onChange={handleInputChange}/>
+            <FormInput type="password" name="password" label="Password" value={password} onChange={handleInputChange}/>
             {
               errors.password && <span className="text-red-500">{errors.password}</span>
             }
           </div>
 
           <div className="flex flex-col rounded-lg w-full h-full pl-4 shadow-md" >
-            <input className="outline-none h-full py-4" type="password" name="confirmPassword" placeholder="Confirm password" value={confirmPassword} onChange={handleInputChange} />
+            <FormInput type="password" name="confirmPassword" label="Confirm password" value={confirmPassword} onChange={handleInputChange} />
             {
               errors.confirmPassword && <span className="text-red-500">{errors.confirmPassword}</span>
             }
