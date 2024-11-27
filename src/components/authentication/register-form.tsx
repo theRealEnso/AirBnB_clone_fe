@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 //import components
 import { FormInput } from "./FormInput";
+import { PictureInput } from "./picture-input";
 
 type RegisterFormInputs = {
   firstName: string;
@@ -34,6 +35,9 @@ const RegisterForm = () => {
 
   const [errors, setErrors] = useState<FormErrors>({});
 
+  const [readablePicture, setReadablePicture] = useState<string>("");
+  const [pictureError, setPictureError] = useState<string>("")
+
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const {name, value} = event.target;
 
@@ -64,7 +68,7 @@ const RegisterForm = () => {
 
     if(firstName.length < 2){
       validationErrors.firstName = "First name must be at least two characters long"
-    }
+    };
 
     if(!lastName.trim()){
       validationErrors.lastName = "Last name is required";
@@ -98,7 +102,7 @@ const RegisterForm = () => {
     }
   };
 
-  console.log(formInputs);
+  // console.log(formInputs);
 
   return (
     <div className="flex items-center justify-center min-h-screen flex-col m-auto">
@@ -107,7 +111,7 @@ const RegisterForm = () => {
         <h1 className="mb-4 text-2xl font-bold tracking-wide">Create an account!</h1>
       </div>
 
-      <div className="w-[40%]">
+      <div className="w-[30%]">
         <form onSubmit={handleSubmit} className="flex flex-col items-center space-y-6">
 
           <div className="flex flex-col rounded-lg w-full h-full pl-4 shadow-md" >
@@ -144,6 +148,12 @@ const RegisterForm = () => {
               errors.confirmPassword && <span className="text-red-500">{errors.confirmPassword}</span>
             }
           </div>
+          
+          <div className="flex flex-col rounded-lg w-full h-full pl-4 shadow-md" >
+            <PictureInput readablePicture={readablePicture} setReadablePicture={setReadablePicture} setPictureError={setPictureError}></PictureInput>
+            {pictureError && <span className="text-red-500">{pictureError}</span>}
+          </div>
+
           
           <button className="w-[50%] rounded-full p-4 bg-primary text-white tracking-wide font-bold" type="submit">Sign up!</button>
         </form>

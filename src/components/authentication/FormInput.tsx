@@ -4,19 +4,14 @@ import React from 'react'
 
 export const FormInput = ({label, ...otherProperties}) => {
   return (
-    <div className="relative">
+    <div className="relative cursor-pointer">
         <input {...otherProperties} className={`peer outline-none h-full w-full py-4`} ></input>
 
-        <label 
-            className=
-            {
-                `text-gray-400 font-bold tracking-wide absolute left-[10px] top-[15px] peer-focus:text-black peer-focus:-top-[10px] peer-focus:-left-[3px] peer-focus:text-sm transition-all
-                ${otherProperties.value && otherProperties.value.length && typeof otherProperties.value === "string" 
-                    ? "text-black -top-[10px] -left-[3px] text-sm transition-all" 
-                    : ""}`
-            }>
-                {label}
-        </label>
+        <label className={`text-gray-400 font-bold tracking-wide absolute left-[10px] top-[15px] peer-focus:text-black peer-focus:-top-[10px] peer-focus:-left-[3px] peer-focus:text-sm transition-all hover:pointer-events-none
+        ${otherProperties.value && otherProperties.value.length && typeof otherProperties.value === "string" 
+            ? "text-black -top-[10px] -left-[3px] text-sm transition-all" 
+            : ""
+        }`}>{label}</label>
     </div>
   );
 };

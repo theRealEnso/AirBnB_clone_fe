@@ -21,7 +21,6 @@ const LoginForm = () => {
       [name]: value,
     });
 
-    console.log(formInputs);
   };
 
   const handleSubmit = () => {
@@ -36,14 +35,14 @@ const LoginForm = () => {
         <span className="font-bold text-xl tracking wide">Sign in</span>
       </div>
 
-      <div className="w-[40%]">
+      <div className="w-[30%]">
         <form onSubmit={handleSubmit} className="flex flex-col items-center space-y-6">
             <div className="w-full shadow-md rounded-lg pl-4">
                 <FormInput type="text" name="email" label="Email address" value={email} onChange={handleInputChange}/>
             </div>
           
           <div className="w-full shadow-md rounded-lg pl-4">
-            <FormInput type="password" label="Password" value={password} onChange={handleInputChange}/>
+            <FormInput type="password" name="password" label="Password" value={password} onChange={handleInputChange}/>
           </div>
           
           <button className="w-[50%] rounded-full p-4 bg-primary text-white tracking-wide font-bold" type="submit">Login</button>
