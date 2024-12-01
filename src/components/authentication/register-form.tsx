@@ -1,10 +1,25 @@
 import { useState, FormEvent, ChangeEvent} from "react";
-import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { selectCurrentUser, selectUserError } from "../../redux/user/user-selectors";
+
+import axios from "axios";
+
+import { Link, useNavigate } from "react-router-dom";
+
+//import registerUser function call to backend user registration api endpoint
+import { useRegisterUserMutation } from "../../api/api-slice";
 
 //import components
 import { FormInput } from "./FormInput";
 import { PictureInput } from "./picture-input";
+import { RiseLoader } from "react-spinners";
 
+//environment variables
+const cloudinary_key = import.meta.env.VITE_REACT_APP_CLOUDINARY_UNSIGNED_UPLOAD_PRESET_NAME;
+const cloudinary_name = import.meta.env.VITE_REACT_APP_CLOUDINARY_API_NAME;
+
+
+//define types
 type RegisterFormInputs = {
   firstName: string;
   lastName: string;
@@ -23,6 +38,10 @@ type FormErrors = {
 
 const RegisterForm = () => {
 
+  const navigate = useNavigate();
+  const currentUser = useSelector(selectCurrentUser);
+  const userError = useSelector(selectUserError);
+
   const [formInputs, setFormInputs] = useState<RegisterFormInputs>({
     firstName: "",
     lastName: "",
@@ -31,12 +50,12 @@ const RegisterForm = () => {
     confirmPassword: "",
   });
 
-  const {firstName, lastName, email, password, confirmPassword} = formInputs;
-
   const [errors, setErrors] = useState<FormErrors>({});
-
   const [readablePicture, setReadablePicture] = useState<string>("");
   const [pictureError, setPictureError] = useState<string>("")
+  const [registerUser, {isLoading, isSuccess, isError, error}] = useRegisterUserMutation();
+
+  const {firstName, lastName, email, password, confirmPassword} = formInputs;
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const {name, value} = event.target;
@@ -57,7 +76,16 @@ const RegisterForm = () => {
     })
   };
 
-  const handleSubmit = (event: FormEvent) => {
+  const uploadPictureToCloudinary = async () => {
+    const formData = new FormData();
+    formData.append("upload_preset", cloudinary_key);
+    formData.append("file", readablePicture);
+    
+    const {data} = await axios.post(`https://api.cloudinary.com/v1_1/${cloudinary_name}/image/upload`, formData);
+    return data;
+  }
+
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
 
     const validationErrors: FormErrors = {};
@@ -97,12 +125,37 @@ const RegisterForm = () => {
     setErrors(validationErrors);
 
     if(Object.keys(validationErrors).length === 0){
-      alert("Form submitted successfully!");
-      clearFormInputs();
+      try {
+        if(readablePicture){
+          const uploadedPicture = await uploadPictureToCloudinary();
+          const storedImageUrl = uploadedPicture.secure_url;
+          await registerUser({...formInputs, picture: storedImageUrl}).unwrap();
+          alert("Form submitted successfully!");
+          clearFormInputs();
+        } else {
+          await registerUser({...formInputs})
+          clearFormInputs();
+        }
+
+
+        if(isSuccess || currentUser){
+          navigate("/");
+        }
+
+      } catch(error){
+        console.error(`User registration failed: ${error}`);
+        navigate("/register");
+      }
     }
   };
 
   // console.log(formInputs);
+  console.log(currentUser);
+
+  if(isError){
+    console.log(error);
+    console.log(userError);
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen flex-col m-auto">
@@ -155,7 +208,9 @@ const RegisterForm = () => {
           </div>
 
           
-          <button className="w-[50%] rounded-full p-4 bg-primary text-white tracking-wide font-bold" type="submit">Sign up!</button>
+          <button className="w-[50%] rounded-full p-4 bg-primary text-white tracking-wide font-bold" type="submit">
+            {isLoading ? <RiseLoader size={10} color="white"></RiseLoader> : "Sign up"}
+          </button>
         </form>
       </div>
       
@@ -163,6 +218,11 @@ const RegisterForm = () => {
         <span>Already a member?</span>
         <Link to="/login" className="font-bold underline">Login</Link>
       </div>
+
+      {
+        isError && <span className=" mt-2 text-red-500">{error.data.error.message}</span>
+      }
+
     </div>
   );
 };

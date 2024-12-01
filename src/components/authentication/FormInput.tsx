@@ -1,20 +1,24 @@
-import React from 'react'
-
-// const shrinkLabel = `peer-focus:text-red-500 peer-focus:-top-[5px] peer-focus:-left-[3px] peer-focus:text-sm transition-all`
-
-export const FormInput = ({label, ...otherProperties}) => {
+export const FormInput = ({ label, ...otherProperties }) => {
   return (
-    <div className="relative cursor-pointer">
-        <input {...otherProperties} className={`peer outline-none h-full w-full py-4`} ></input>
-
-        <label className={`text-gray-400 font-bold tracking-wide absolute left-[10px] top-[15px] peer-focus:text-black peer-focus:-top-[10px] peer-focus:-left-[3px] peer-focus:text-sm transition-all hover:pointer-events-none
-        ${otherProperties.value && otherProperties.value.length && typeof otherProperties.value === "string" 
-            ? "text-black -top-[10px] -left-[3px] text-sm transition-all" 
-            : ""
-        }`}>{label}</label>
+    <div className="relative">
+      <input
+        {...otherProperties}
+        className={`peer outline-none h-full w-full py-4`}
+      />
+      <label
+        className={`
+          text-gray-400 font-bold tracking-wide absolute left-[10px] top-[15px] pointer-events-none transition-all
+          peer-focus:top-[-10px] peer-focus:left-[-3px] peer-focus:text-black peer-focus:text-sm
+          ${otherProperties.value?.length ? "top-[-10px] left-[-3px] text-black text-sm pointer-events-auto" : ""}
+        `}
+      >
+        {label}
+      </label>
     </div>
   );
 };
+
+// const shrinkLabel = `peer-focus:text-red-500 peer-focus:-top-[5px] peer-focus:-left-[3px] peer-focus:text-sm transition-all`
 
 // notes to self:
 // tailwind CSS uses the peer and peer-* class names to target sibling elements. 
