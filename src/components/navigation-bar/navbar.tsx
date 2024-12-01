@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, MouseEvent} from "react";
+import { useState, useEffect, useRef, MouseEvent, ReactNode} from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -106,11 +106,10 @@ const Navbar = () => {
 
                         <span className="">
                             {
-                                currentUser || access_token 
+                                currentUser && currentUser.picture || access_token && access_token.length > 0
                                     ? (
-                                        <div>
-                                            <img src={currentUser.picture} alt="profile picture" className="w-[30px] h-[30px] object-fit rounded-full"></img>
-                                        </div>
+                                        
+                                        <img src={currentUser.picture} alt="profile picture" className="w-[30px] h-[30px] object-fit rounded-full"></img>
                                     )
                                     : (
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-8">

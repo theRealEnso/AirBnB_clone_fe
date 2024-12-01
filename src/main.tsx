@@ -15,6 +15,7 @@ import ErrorPage from './error-page.tsx';
 import App from './App.tsx';
 import RegisterForm from './components/authentication/register-form.tsx';
 import LoginForm from './components/authentication/login-form.tsx';
+import { AccountPage } from './components/account page/account-page.tsx';
 
 //import components and functions to set up Routing
 import { createBrowserRouter, RouterProvider,} from 'react-router-dom';
@@ -43,6 +44,15 @@ const router = createBrowserRouter([
       {
         path: "/login",
         element: <LoginForm></LoginForm>
+      },
+
+      {
+        path: "/account/:subpage?",
+        element: (
+          <ProtectedRoute>
+            <AccountPage></AccountPage>
+          </ProtectedRoute>
+        )
       }
     ]
   }

@@ -1,6 +1,6 @@
 import { useState, FormEvent, ChangeEvent} from "react";
 import { useSelector } from "react-redux";
-import { selectCurrentUser, selectUserError } from "../../redux/user/user-selectors";
+import { selectCurrentUser} from "../../redux/user/user-selectors";
 
 import axios from "axios";
 
@@ -10,9 +10,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { useRegisterUserMutation } from "../../api/api-slice";
 
 //import components
-import { FormInput } from "./FormInput";
+import { FormInput } from "./form-input";
 import { PictureInput } from "./picture-input";
 import { RiseLoader } from "react-spinners";
+
+//import utility functions
+import { getErrorMessage } from "../../utils";
 
 //environment variables
 const cloudinary_key = import.meta.env.VITE_REACT_APP_CLOUDINARY_UNSIGNED_UPLOAD_PRESET_NAME;
@@ -40,7 +43,6 @@ const RegisterForm = () => {
 
   const navigate = useNavigate();
   const currentUser = useSelector(selectCurrentUser);
-  const userError = useSelector(selectUserError);
 
   const [formInputs, setFormInputs] = useState<RegisterFormInputs>({
     firstName: "",
@@ -139,7 +141,7 @@ const RegisterForm = () => {
 
 
         if(isSuccess || currentUser){
-          navigate("/");
+          navigate("/account");
         }
 
       } catch(error){
@@ -152,10 +154,10 @@ const RegisterForm = () => {
   // console.log(formInputs);
   console.log(currentUser);
 
-  if(isError){
-    console.log(error);
-    console.log(userError);
-  }
+  // if(isError){
+  //   console.log(error);
+  //   console.log(userError);
+  // }
 
   return (
     <div className="flex items-center justify-center min-h-screen flex-col m-auto">
@@ -220,7 +222,8 @@ const RegisterForm = () => {
       </div>
 
       {
-        isError && <span className=" mt-2 text-red-500">{error.data.error.message}</span>
+        isError && <span className=" mt-2 text-red-500">{getErrorMessage(error)}</span>
+        // message we need is in error.data.error.message
       }
 
     </div>

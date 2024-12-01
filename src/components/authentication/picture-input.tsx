@@ -1,6 +1,12 @@
-import { useRef } from "react";
+import { useRef, ChangeEvent} from "react";
 
-export const PictureInput = ({readablePicture, setReadablePicture, setPictureError}) => {
+type PictureProps = {
+    readablePicture: string;
+    setReadablePicture:  React.Dispatch<React.SetStateAction<string | ArrayBuffer | null>>;
+    setPictureError:  React.Dispatch<React.SetStateAction<string>>;
+};
+
+export const PictureInput = ({readablePicture, setReadablePicture, setPictureError}: PictureProps) => {
     const pictureInputRef = useRef<HTMLInputElement | null>(null);
 
     const togglePictureInput = () => {
@@ -14,11 +20,16 @@ export const PictureInput = ({readablePicture, setReadablePicture, setPictureErr
         togglePictureInput();
     };
 
-    const handleImageSelection = (event) => {
+    const handleImageSelection = (event: ChangeEvent<HTMLInputElement>) => {
         // console.log(event.target.files);
         // console.log(typeof event.target.files);
 
-        let files = Array.from(event.target.files);
+        if(!event.target.files){
+            setPictureError("No files selected");
+            return;
+        }
+
+        const files = Array.from(event.target.files);
         // console.log(files);
 
         const selectedPicture = files[0];

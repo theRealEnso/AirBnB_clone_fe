@@ -1,15 +1,23 @@
 import { useState, ChangeEvent, FormEvent} from "react";
+import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 
 //import components
-import { FormInput } from "./FormInput";
+import { FormInput } from "./form-input";
 import { RiseLoader } from "react-spinners";
+
+//import redux selector
+import { selectCurrentUser } from "../../redux/user/user-selectors";
 
 //import loginUser function to back end login user api endpoint
 import { useLoginUserMutation } from "../../api/api-slice";
 
+//import utility function
+import { getErrorMessage } from "../../utils";
+
 const LoginForm = () => {
   const navigate = useNavigate();
+  const currentUser = useSelector(selectCurrentUser);
 
   const [loginUser, {isLoading, isSuccess, isError, error}] = useLoginUserMutation();
 
@@ -30,14 +38,22 @@ const LoginForm = () => {
 
   };
 
+  const clearInputs = () => {
+    setFormInputs({
+      email: "",
+      password: "",
+    })
+  }
+
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
 
     try {
       await loginUser({...formInputs});
 
-      if(isSuccess){
-        navigate("/")
+      if(isSuccess || currentUser){
+        clearInputs();
+        navigate("/account")
       }
 
     } catch(error) {
@@ -45,6 +61,10 @@ const LoginForm = () => {
     }
 
   };
+
+  // if(isError){
+  //   console.log(error);
+  // }
 
   return (
     <div className="flex items-center justify-center min-h-screen flex-col m-auto">
@@ -78,7 +98,8 @@ const LoginForm = () => {
       </div>
 
       {
-        isError && <span>{error.data.error.message}</span>
+        isError && <span>{getErrorMessage(error)}</span>
+        //error message we need is in error.data.error.message
       }
     </div>
   );
