@@ -1,9 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 const AUTH_ENDPOINT = `${import.meta.env.VITE_REACT_APP_AIRBNB_API_ENDPOINT}/auth`;
+const PLACES_ENDPOINT = `${import.meta.env.VITE_REACT_APP_AIRBNB_API_ENDPOINT}/places`;
 
-export const apiSlice = createApi({
-  reducerPath: 'api',
+export const userApiSlice = createApi({
+  reducerPath: 'usersApi',
   baseQuery: fetchBaseQuery({ baseUrl: `${AUTH_ENDPOINT}` }),
   endpoints: (builder) => ({
     registerUser: builder.mutation({
@@ -21,7 +22,31 @@ export const apiSlice = createApi({
             body: userData,
         })
     })
-  }),
+  })
 });
 
-export const { useRegisterUserMutation, useLoginUserMutation } = apiSlice;
+export const placesApiSlice = createApi({
+    reducerPath: "placesApi",
+    baseQuery: fetchBaseQuery({baseUrl: `${PLACES_ENDPOINT}`}),
+    endpoints: (builder) => ({
+        uploadPhotoFromLink: builder.mutation({
+            query: (imageUrl) => ({
+                url: "/upload-by-link",
+                method: "POST",
+                body: imageUrl,
+            })
+        }),
+
+        uploadPhotoFromDevice: builder.mutation({
+            query: (formData) => ({
+                url: "/upload-from-device",
+                method: "POST",
+                body: formData,
+            })
+        }),
+
+    })
+});
+
+export const { useRegisterUserMutation, useLoginUserMutation } = userApiSlice;
+export const {useUploadPhotoFromLinkMutation, useUploadPhotoFromDeviceMutation} = placesApiSlice;

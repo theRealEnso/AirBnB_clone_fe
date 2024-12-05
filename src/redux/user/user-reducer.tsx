@@ -1,5 +1,5 @@
 import { createSlice, isAnyOf } from "@reduxjs/toolkit";
-import { apiSlice } from "../../api/api-slice";
+import { userApiSlice } from "../../api/api-slice";
 
 type User = {
     firstName: string;
@@ -46,12 +46,12 @@ export const userSlice = createSlice({
 
     extraReducers: (builder) => {
         builder.addMatcher(
-            isAnyOf(apiSlice.endpoints.registerUser.matchPending, apiSlice.endpoints.loginUser.matchPending), 
+            isAnyOf(userApiSlice.endpoints.registerUser.matchPending, userApiSlice.endpoints.loginUser.matchPending), 
             (state) => {
             state.status = "loading";
         });
         builder.addMatcher(
-            isAnyOf(apiSlice.endpoints.registerUser.matchFulfilled, apiSlice.endpoints.loginUser.matchFulfilled),
+            isAnyOf(userApiSlice.endpoints.registerUser.matchFulfilled, userApiSlice.endpoints.loginUser.matchFulfilled),
             (state, action) => {
                 state.status = "success";
                 state.user = action.payload.user;
@@ -59,7 +59,7 @@ export const userSlice = createSlice({
             }
         );
         builder.addMatcher(
-            isAnyOf(apiSlice.endpoints.registerUser.matchRejected, apiSlice.endpoints.loginUser.matchRejected),
+            isAnyOf(userApiSlice.endpoints.registerUser.matchRejected, userApiSlice.endpoints.loginUser.matchRejected),
             (state, action) => {
                 state.status = "failed";
                 state.error = action.error.message || "User registration or login failed";
