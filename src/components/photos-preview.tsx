@@ -7,11 +7,12 @@ export const PhotosPreview = ({photosToDisplay}) => {
   }
 
   return (
-    <div className="flex items-center justify-center gap-2">
+    <div className="mt-2 gap-2 flex flex-auto">
       {
-        photosToDisplay.map((photoObject) => {
+        photosToDisplay.map((photoObject, idx) => {
           // console.log(photoObject);
-          return <Photo photoObject={photoObject} key={photoObject}></Photo>
+          const {tempId} = photoObject;
+          return <Photo photoObject={photoObject} key={tempId} index={idx}></Photo>
         })
       }
     </div>

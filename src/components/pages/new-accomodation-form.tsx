@@ -122,7 +122,7 @@ export const NewAccomodationForm = () => {
                     isSuccessFromDevice && <span className="text-green-500">Image successfully uploaded from device!</span>
                 }
 
-                <div className="mt-2 gap-2 grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 w-full">
+                <div className="">
                     {
                         photos && photos.length > 0 && <PhotosPreview photosToDisplay={photos}></PhotosPreview>
                     }
