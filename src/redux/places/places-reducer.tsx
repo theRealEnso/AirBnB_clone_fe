@@ -50,7 +50,7 @@ export const placesSlice = createSlice({
         );
 
         builder.addMatcher(
-            isAnyOf(placesApiSlice.endpoints.uploadPhotoFromLink.matchFulfilled, placesApiSlice.endpoints.uploadPhotoFromDevice.matchFulfilled,), (state, action) => {
+            isAnyOf(placesApiSlice.endpoints.uploadPhotoFromLink.matchFulfilled,), (state, action) => {
                 state.status = "success";
                 state.place.photos = [...state.place.photos, action.payload];
             }

@@ -3,6 +3,8 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 const AUTH_ENDPOINT = `${import.meta.env.VITE_REACT_APP_AIRBNB_API_ENDPOINT}/auth`;
 const PLACES_ENDPOINT = `${import.meta.env.VITE_REACT_APP_AIRBNB_API_ENDPOINT}/places`;
 
+
+//define slice to handle functions and actions related to user authentication
 export const userApiSlice = createApi({
   reducerPath: 'usersApi',
   baseQuery: fetchBaseQuery({ baseUrl: `${AUTH_ENDPOINT}` }),
@@ -25,6 +27,7 @@ export const userApiSlice = createApi({
   })
 });
 
+//define slice to handle functions and actions related to users creating new places
 export const placesApiSlice = createApi({
     reducerPath: "placesApi",
     baseQuery: fetchBaseQuery({baseUrl: `${PLACES_ENDPOINT}`}),
@@ -39,7 +42,7 @@ export const placesApiSlice = createApi({
 
         uploadPhotoFromDevice: builder.mutation({
             query: (formData) => ({
-                url: "/upload-from-device",
+                url: "/upload-to-temporary",
                 method: "POST",
                 body: formData,
             })

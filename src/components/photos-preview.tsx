@@ -9,9 +9,9 @@ export const PhotosPreview = ({photosToDisplay}) => {
   return (
     <div className="flex items-center justify-center gap-2">
       {
-        photosToDisplay.map((photoName) => {
-          // console.log(photoName);
-          return <Photo photoName={photoName} key={photoName}></Photo>
+        photosToDisplay.map((photoObject) => {
+          // console.log(photoObject);
+          return <Photo photoObject={photoObject} key={photoObject}></Photo>
         })
       }
     </div>
