@@ -48,6 +48,10 @@ export const placesSlice = createSlice({
             const updatedPhotos = photosArray.filter((_, index) => index !== i);
 
             state.place.photos = updatedPhotos;
+        },
+
+        clearPhotos: (state) => {
+            state.place.photos = [];
         }
     },
 
@@ -82,4 +86,4 @@ export const placesSlice = createSlice({
 
 export const placesReducer = placesSlice.reducer;
 
-export const {addPhotos, removePhoto} = placesSlice.actions;
+export const {addPhotos, removePhoto, clearPhotos} = placesSlice.actions;

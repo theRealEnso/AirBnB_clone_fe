@@ -1,9 +1,18 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 
+//import redux actions
 import { removePhoto } from "../redux/places/places-reducer";
 
-export const Photo = ({photoObject, index}) => {
+//import typescript types
+import { PhotoObject } from "./photos-uploader-component";
+
+type PhotoChildProps = {
+    photoObject: PhotoObject;
+    index: number;
+}
+
+export const Photo = ({photoObject, index}: PhotoChildProps) => {
     // console.log(photoObject);
     const {photo} = photoObject;
 

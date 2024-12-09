@@ -1,3 +1,5 @@
+import { RootState } from '../redux/root-reducer';
+
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 const AUTH_ENDPOINT = `${import.meta.env.VITE_REACT_APP_AIRBNB_API_ENDPOINT}/auth`;
@@ -30,7 +32,17 @@ export const userApiSlice = createApi({
 //define slice to handle functions and actions related to users creating new places
 export const placesApiSlice = createApi({
     reducerPath: "placesApi",
-    baseQuery: fetchBaseQuery({baseUrl: `${PLACES_ENDPOINT}`}),
+    baseQuery: fetchBaseQuery({
+        baseUrl: `${PLACES_ENDPOINT}`,
+        prepareHeaders: (headers, {getState}) => { //destucture the getState function from RTK api
+            const token = (getState() as RootState).user?.user?.access_token;
+            if(token){
+                headers.set("Authorization", `Bearer ${token}`);
+            };
+
+            return headers;
+        }
+    }),
     endpoints: (builder) => ({
         uploadPhotoFromLink: builder.mutation({
             query: (imageUrl) => ({
@@ -48,8 +60,16 @@ export const placesApiSlice = createApi({
             })
         }),
 
+        createNewPlace: builder.mutation({
+            query: (placeData) => ({
+                url: "/create-new-place",
+                method: "POST",
+                body: placeData,
+            })
+        }),
+
     })
 });
 
 export const { useRegisterUserMutation, useLoginUserMutation } = userApiSlice;
-export const {useUploadPhotoFromLinkMutation, useUploadPhotoFromDeviceMutation} = placesApiSlice;
+export const {useUploadPhotoFromLinkMutation, useUploadPhotoFromDeviceMutation, useCreateNewPlaceMutation} = placesApiSlice;
