@@ -10,8 +10,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useRegisterUserMutation } from "../../api/api-slice";
 
 //import components
-import { FormInput } from "./form-input";
-import { PictureInput } from "./picture-input";
+import { FormInput } from "./FormInput";
+import { PictureInput } from "./PictureInput";
 import { RiseLoader } from "react-spinners";
 
 //import utility functions

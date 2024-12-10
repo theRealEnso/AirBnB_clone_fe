@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 
 //import components
-import { FormInput } from "./form-input";
+import { FormInput } from "./FormInput";
 import { RiseLoader } from "react-spinners";
 
 //import redux selector

@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 import { removePhoto } from "../redux/places/places-reducer";
 
 //import typescript types
-import { PhotoObject } from "./photos-uploader-component";
+import { PhotoObject } from "./PhotosUploader";
 
 type PhotoChildProps = {
     photoObject: PhotoObject;

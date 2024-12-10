@@ -2,6 +2,7 @@ import { createSlice, isAnyOf } from "@reduxjs/toolkit";
 import { userApiSlice } from "../../api/api-slice";
 
 type User = {
+    id: string;
     firstName: string;
     lastName: string;
     email: string;
@@ -19,6 +20,7 @@ const USER_INITIAL_STATE: UserState = {
     status: "",
     error: "",
     user: {
+        id: "",
         firstName: "",
         lastName: "",
         email: "",
@@ -35,6 +37,7 @@ export const userSlice = createSlice({
             state.status = "";
             state.error = "";
             state.user = {
+                id: "",
                 firstName: "",
                 lastName: "",
                 email: "",

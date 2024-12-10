@@ -1,8 +1,8 @@
 //import components
-import { Photo } from "./photo-component";
+import { Photo } from "./Photo";
 
 //import typescript types
-import { PhotosProps } from "./photos-uploader-component";
+import { PhotosProps } from "./PhotosUploader";
 
 export const PhotosPreview = ({photos}: PhotosProps) => {
   if (!Array.isArray(photos)) {

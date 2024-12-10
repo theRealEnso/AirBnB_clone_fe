@@ -1,7 +1,7 @@
 import { useState, useRef, ChangeEvent, MouseEvent } from "react";
 
 //import components
-import { PhotosPreview } from "./photos-preview";
+import { PhotosPreview } from "./PhotosPreview";
 import { RingLoader } from "react-spinners";
 
 //import function to upload photo from user device to our backend api endpoint

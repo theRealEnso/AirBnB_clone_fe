@@ -13,9 +13,12 @@ import { ProtectedRoute } from './api/ProtectedRoute.tsx';
 import RootLayout from './RootLayout.tsx';
 import ErrorPage from './error-page.tsx';
 import App from './App.tsx';
-import RegisterForm from './components/authentication/register-form.tsx';
-import LoginForm from './components/authentication/login-form.tsx';
-import { AccountPage } from './components/pages/account-page.tsx';
+import RegisterForm from './components/authentication/RegisterForm.tsx';
+import LoginForm from './components/authentication/LoginForm.tsx';
+import { ProfilePage } from './components/pages/ProfilePage.tsx';
+import { BookingsPage } from './components/BookingsPage.tsx';
+import { PlacesPage } from './components/pages/PlacesPage.tsx';
+import { NewAccomodationForm } from './components/pages/NewAccomodationForm.tsx';
 
 //import components and functions to set up Routing
 import { createBrowserRouter, RouterProvider,} from 'react-router-dom';
@@ -47,19 +50,37 @@ const router = createBrowserRouter([
       },
 
       {
-        path: "/account/:subpage?",
+        path: "/account",
         element: (
           <ProtectedRoute>
-            <AccountPage></AccountPage>
+            <ProfilePage></ProfilePage>
           </ProtectedRoute>
         )
       },
 
       {
-        path: "/account/:subpage?/:action",
+        path: "/account/bookings",
         element: (
           <ProtectedRoute>
-            <AccountPage></AccountPage>
+            <BookingsPage></BookingsPage>
+          </ProtectedRoute>
+        )
+      },
+
+      {
+        path: "/account/places",
+        element: (
+          <ProtectedRoute>
+            <PlacesPage></PlacesPage>
+          </ProtectedRoute>
+        )
+      },
+
+      {
+        path: "/account/places/new",
+        element: (
+          <ProtectedRoute>
+            <NewAccomodationForm></NewAccomodationForm>
           </ProtectedRoute>
         )
       }

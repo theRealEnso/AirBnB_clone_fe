@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { selectCurrentUser } from "../../redux/user/user-selectors";
 
 // import components
-import ProfileWidget from "./profileWidget";
+import ProfileWidget from "./ProfileWidget";
 
 const Navbar = () => {
     const navigate = useNavigate();

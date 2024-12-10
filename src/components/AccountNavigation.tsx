@@ -1,39 +1,29 @@
-import { useSelector, useDispatch } from 'react-redux';
-import { Link, useParams } from 'react-router-dom'
+import { Link, useLocation } from "react-router-dom"
 
-//import redux selector
-import { selectCurrentUser } from '../../redux/user/user-selectors';
+export const AccountNavigation = () => {
 
-//import redux actions
-import { logout } from '../../redux/user/user-reducer';
+    const location = useLocation();
+    // console.log(location);
+    const {pathname} = location;
+    // console.log(pathname);
 
-//import components
-import { PlacesPage } from './places-page';
-
-export const AccountPage = () => {
-    const dispatch = useDispatch();
-    const currentUser = useSelector(selectCurrentUser);
-
-    let {subpage} = useParams();
-    console.log(subpage);
-
-    if(subpage === undefined){
-        subpage = "profile";
-    };
+    let accountPage = pathname.split("/account/")[1];
+    console.log(accountPage);
+    if(accountPage === undefined){
+        accountPage = "profile"
+    }
 
     const focusedStyles = (str = null) => {
         let classes = "inline-flex gap-2 py-2 px-6";
 
-        if(str === subpage){
+        if(str === accountPage){
             classes += " bg-primary text-white rounded-full";
         } else {
-            classes += " shadow-md rounded-full hover:shadow-lg"
+            classes += " shadow-md rounded-full hover:shadow-lg";
         }
 
         return classes;
     };
-
-    const signOut = () => dispatch(logout())
 
   return (
     <div>
@@ -59,23 +49,10 @@ export const AccountPage = () => {
                     <path d="M19.006 3.705a.75.75 0 1 0-.512-1.41L6 6.838V3a.75.75 0 0 0-.75-.75h-1.5A.75.75 0 0 0 3 3v4.93l-1.006.365a.75.75 0 0 0 .512 1.41l16.5-6Z" />
                     <path fillRule="evenodd" d="M3.019 11.114 18 5.667v3.421l4.006 1.457a.75.75 0 1 1-.512 1.41l-.494-.18v8.475h.75a.75.75 0 0 1 0 1.5H2.25a.75.75 0 0 1 0-1.5H3v-9.129l.019-.007ZM18 20.25v-9.566l1.5.546v9.02H18Zm-9-6a.75.75 0 0 0-.75.75v4.5c0 .414.336.75.75.75h3a.75.75 0 0 0 .75-.75V15a.75.75 0 0 0-.75-.75H9Z" clipRule="evenodd" />
                 </svg>
-                
+
                 My accomodations
             </Link>
         </nav>
-
-        {
-            subpage === "profile" && (
-                <div className="flex flex-col items-center justify-center max-w-lg mx-auto">
-                    <h1>{`Logged in as ${currentUser.firstName} ${currentUser.lastName} (${currentUser.email})`}</h1>
-                    <button className="bg-primary text-white rounded-lg mt-2 w-[60%] py-1" onClick={signOut}>Log out</button>
-                </div>
-            )
-        }
-
-        {
-            subpage === "places" && <PlacesPage></PlacesPage>
-        }
     </div>
-  );
-};
+  )
+}

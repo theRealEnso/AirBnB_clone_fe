@@ -3,6 +3,7 @@ import { useSelector, useDispatch} from 'react-redux';
 
 //import redux selector
 import { selectPlacePhotos } from '../../redux/places/places-selector';
+import { selectCurrentUser } from '../../redux/user/user-selectors';
 
 //import redux action
 import { clearPhotos } from '../../redux/places/places-reducer';
@@ -10,8 +11,8 @@ import { clearPhotos } from '../../redux/places/places-reducer';
 import { useNavigate } from 'react-router-dom';
 
 //import components
-import { PhotosUploader } from '../photos-uploader-component';
-import { PerksComponent } from '../perks-component';
+import { PhotosUploader } from '../PhotosUploader';
+import { PerksComponent } from '../Perks';
 import { RingLoader } from 'react-spinners';
 
 //import function to send form data to api endpoint that creates a new place
@@ -23,7 +24,10 @@ import { getErrorMessage } from '../../utils';
 export const NewAccomodationForm = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
     const photos = useSelector(selectPlacePhotos);
+    const currentUser = useSelector(selectCurrentUser);
+    const owner_id = currentUser.id;
     
     //define all state variables used on the form
     const [title, setTitle] = useState<string>("");
@@ -42,6 +46,7 @@ export const NewAccomodationForm = () => {
         event.preventDefault();
 
         const data = {
+            owner: owner_id,
             title,
             address,
             photos,
@@ -54,11 +59,12 @@ export const NewAccomodationForm = () => {
         }
 
         try {
-            await createNewPlace(data);
+            const result = await createNewPlace(data);
+            console.log(result);
             await dispatch(clearPhotos());
-            
-            if(isSuccess){
-                navigate("/account/places/");
+
+            if(isSuccess || result.data.place){
+                navigate("/account/places");
             }
         } catch(error){
             console.log(error);
@@ -68,6 +74,7 @@ export const NewAccomodationForm = () => {
     // console.log(photoUrl);
     // console.log(photos);
     // console.log(title);
+    console.log(currentUser);
   return (
     <div>
         {
