@@ -1,4 +1,8 @@
 import { useState, useRef, ChangeEvent, MouseEvent } from "react";
+import { useDispatch } from "react-redux";
+
+//import redux actions
+import { addPhotoFromLink, addPhotosFromDevice } from "../redux/places/places-reducer";
 
 //import components
 import { PhotosPreview } from "./PhotosPreview";
@@ -21,6 +25,7 @@ export type PhotosProps = {
 }
 
 export const PhotosUploader = ({photos} : PhotosProps) => {
+    const dispatch = useDispatch();
     const uploadImageButtonRef = useRef<HTMLInputElement | null>(null);
 
     const [fileError, setFileError] = useState<string>("");
@@ -34,7 +39,10 @@ export const PhotosUploader = ({photos} : PhotosProps) => {
         event.preventDefault();
 
         try {
-            await uploadPhotoFromLink({link: photoUrl});
+            const result = await uploadPhotoFromLink({link: photoUrl}).unwrap();
+            // console.log(result);
+            await dispatch(addPhotoFromLink(result));
+
             setPhotoUrl("");
         } catch(error) {
             console.error(error)
@@ -76,7 +84,9 @@ export const PhotosUploader = ({photos} : PhotosProps) => {
 
             if(!fileError || fileError.length === 0){
                 try {
-                    await uploadPhotoFromDevice(formData);
+                    const result = await uploadPhotoFromDevice(formData).unwrap();
+                    console.log(result);
+                    await dispatch(addPhotosFromDevice(result));
                 } catch(error){
                     console.error(error)
                 }

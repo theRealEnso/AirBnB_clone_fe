@@ -6,6 +6,7 @@ import { Provider } from 'react-redux';
 import { store, persistor } from './redux/store.tsx';
 import { PersistGate } from 'redux-persist/integration/react';
 
+
 import './index.css';
 
 //import components
@@ -17,8 +18,10 @@ import RegisterForm from './components/authentication/RegisterForm.tsx';
 import LoginForm from './components/authentication/LoginForm.tsx';
 import { ProfilePage } from './components/pages/ProfilePage.tsx';
 import { BookingsPage } from './components/BookingsPage.tsx';
+import { AccomodationFormPage } from './components/pages/AccomodationFormPage.tsx';
 import { PlacesPage } from './components/pages/PlacesPage.tsx';
-import { NewAccomodationForm } from './components/pages/NewAccomodationForm.tsx';
+import { PlaceDetails } from './components/PlaceDetails.tsx';
+
 
 //import components and functions to set up Routing
 import { createBrowserRouter, RouterProvider,} from 'react-router-dom';
@@ -80,7 +83,16 @@ const router = createBrowserRouter([
         path: "/account/places/new",
         element: (
           <ProtectedRoute>
-            <NewAccomodationForm></NewAccomodationForm>
+            <AccomodationFormPage></AccomodationFormPage>
+          </ProtectedRoute>
+        )
+      },
+
+      {
+        path: `/account/places/:placeId`,
+        element: (
+          <ProtectedRoute>
+            <AccomodationFormPage></AccomodationFormPage>
           </ProtectedRoute>
         )
       }

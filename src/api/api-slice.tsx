@@ -67,9 +67,30 @@ export const placesApiSlice = createApi({
                 body: placeData,
             })
         }),
+        updatePlace: builder.mutation({
+            query: (data) => ({
+                url: "/update-place",
+                method: "PUT",
+                body: data,
+            })
+        }),
+
+        getAllUserPlaces: builder.query({ // use builder.query for this endpoint because we are not mutating anything, just fetching data
+            query: () => ({
+                url: "/get-all-places",
+                method: "GET",
+            })
+        }),
+
+        getPlaceDetails: builder.query({
+            query: (placeId) => ({
+                url: `/${placeId}`,
+                method: "GET",
+            })
+        })
 
     })
 });
 
 export const { useRegisterUserMutation, useLoginUserMutation } = userApiSlice;
-export const {useUploadPhotoFromLinkMutation, useUploadPhotoFromDeviceMutation, useCreateNewPlaceMutation} = placesApiSlice;
+export const {useUploadPhotoFromLinkMutation, useUploadPhotoFromDeviceMutation, useCreateNewPlaceMutation, useGetAllUserPlacesQuery, useGetPlaceDetailsQuery, useUpdatePlaceMutation} = placesApiSlice;

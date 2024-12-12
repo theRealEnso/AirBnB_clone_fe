@@ -10,6 +10,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useRegisterUserMutation } from "../../api/api-slice";
 
 //import components
+import Navbar from "../navigation-bar/Navbar";
 import { FormInput } from "./FormInput";
 import { PictureInput } from "./PictureInput";
 import { RiseLoader } from "react-spinners";
@@ -131,16 +132,15 @@ const RegisterForm = () => {
         if(readablePicture){
           const uploadedPicture = await uploadPictureToCloudinary();
           const storedImageUrl = uploadedPicture.secure_url;
-          await registerUser({...formInputs, picture: storedImageUrl}).unwrap();
-          alert("Form submitted successfully!");
-          clearFormInputs();
+          const {user} = await registerUser({...formInputs, picture: storedImageUrl}).unwrap(); //unwrap will provide us with the raw response from the server
+          if(isSuccess || currentUser || user){
+            alert("Form submitted successfully!");
+            clearFormInputs();
+            navigate("/account");
+          }
         } else {
           await registerUser({...formInputs})
           clearFormInputs();
-        }
-
-
-        if(isSuccess || currentUser){
           navigate("/account");
         }
 
@@ -160,72 +160,76 @@ const RegisterForm = () => {
   // }
 
   return (
-    <div className="flex items-center justify-center min-h-screen flex-col m-auto">
+    <div>
+      <Navbar></Navbar>
+      <div className="flex items-center justify-center min-h-screen flex-col m-auto">
+        
 
-      <div>
-        <h1 className="mb-4 text-2xl font-bold tracking-wide">Create an account!</h1>
+        <div>
+          <h1 className="mb-4 text-2xl font-bold tracking-wide">Create an account!</h1>
+        </div>
+
+        <div className="w-[30%]">
+          <form onSubmit={handleSubmit} className="flex flex-col items-center space-y-6">
+
+            <div className="flex flex-col rounded-lg w-full h-full pl-4 shadow-md" >
+              <FormInput type="text" name="firstName" label="First name" value={firstName} onChange={handleInputChange} />
+              {
+                errors.firstName && <span className="text-red-500">{errors.firstName}</span>
+              }
+            </div>
+
+            <div className="flex flex-col rounded-lg w-full h-full pl-4 shadow-md" >
+              <FormInput type="text" name="lastName" label="Last name" value={lastName} onChange={handleInputChange} />
+              {
+                errors.lastName && <span className="text-red-500">{errors.lastName}</span>
+              }
+            </div>
+
+            <div className="flex flex-col rounded-lg w-full h-full pl-4 shadow-md" >
+              <FormInput type="text" name="email" label="Email address" value={email} onChange={handleInputChange}/>
+              {
+                errors.email && <span className="text-red-500">{errors.email}</span>
+              }
+            </div>
+
+            <div className="flex flex-col rounded-lg w-full h-full pl-4 shadow-md" >
+              <FormInput type="password" name="password" label="Password" value={password} onChange={handleInputChange}/>
+              {
+                errors.password && <span className="text-red-500">{errors.password}</span>
+              }
+            </div>
+
+            <div className="flex flex-col rounded-lg w-full h-full pl-4 shadow-md" >
+              <FormInput type="password" name="confirmPassword" label="Confirm password" value={confirmPassword} onChange={handleInputChange} />
+              {
+                errors.confirmPassword && <span className="text-red-500">{errors.confirmPassword}</span>
+              }
+            </div>
+            
+            <div className="flex flex-col rounded-lg w-full h-full pl-4 shadow-md" >
+              <PictureInput readablePicture={readablePicture} setReadablePicture={setReadablePicture} setPictureError={setPictureError}></PictureInput>
+              {pictureError && <span className="text-red-500">{pictureError}</span>}
+            </div>
+
+            
+            <button className="w-[50%] rounded-full p-4 bg-primary text-white tracking-wide font-bold" type="submit">
+              {isLoading ? <RiseLoader size={10} color="white"></RiseLoader> : "Sign up"}
+            </button>
+          </form>
+        </div>
+        
+        <div className="flex space-x-2 mt-2">
+          <span>Already a member?</span>
+          <Link to="/login" className="font-bold underline">Login</Link>
+        </div>
+
+        {
+          isError && <span className=" mt-2 text-red-500">{getErrorMessage(error)}</span>
+          // message we need is in error.data.error.message
+        }
+
       </div>
-
-      <div className="w-[30%]">
-        <form onSubmit={handleSubmit} className="flex flex-col items-center space-y-6">
-
-          <div className="flex flex-col rounded-lg w-full h-full pl-4 shadow-md" >
-            <FormInput type="text" name="firstName" label="First name" value={firstName} onChange={handleInputChange} />
-            {
-              errors.firstName && <span className="text-red-500">{errors.firstName}</span>
-            }
-          </div>
-
-          <div className="flex flex-col rounded-lg w-full h-full pl-4 shadow-md" >
-            <FormInput type="text" name="lastName" label="Last name" value={lastName} onChange={handleInputChange} />
-            {
-              errors.lastName && <span className="text-red-500">{errors.lastName}</span>
-            }
-          </div>
-
-          <div className="flex flex-col rounded-lg w-full h-full pl-4 shadow-md" >
-            <FormInput type="text" name="email" label="Email address" value={email} onChange={handleInputChange}/>
-            {
-              errors.email && <span className="text-red-500">{errors.email}</span>
-            }
-          </div>
-
-          <div className="flex flex-col rounded-lg w-full h-full pl-4 shadow-md" >
-            <FormInput type="password" name="password" label="Password" value={password} onChange={handleInputChange}/>
-            {
-              errors.password && <span className="text-red-500">{errors.password}</span>
-            }
-          </div>
-
-          <div className="flex flex-col rounded-lg w-full h-full pl-4 shadow-md" >
-            <FormInput type="password" name="confirmPassword" label="Confirm password" value={confirmPassword} onChange={handleInputChange} />
-            {
-              errors.confirmPassword && <span className="text-red-500">{errors.confirmPassword}</span>
-            }
-          </div>
-          
-          <div className="flex flex-col rounded-lg w-full h-full pl-4 shadow-md" >
-            <PictureInput readablePicture={readablePicture} setReadablePicture={setReadablePicture} setPictureError={setPictureError}></PictureInput>
-            {pictureError && <span className="text-red-500">{pictureError}</span>}
-          </div>
-
-          
-          <button className="w-[50%] rounded-full p-4 bg-primary text-white tracking-wide font-bold" type="submit">
-            {isLoading ? <RiseLoader size={10} color="white"></RiseLoader> : "Sign up"}
-          </button>
-        </form>
-      </div>
-      
-      <div className="flex space-x-2 mt-2">
-        <span>Already a member?</span>
-        <Link to="/login" className="font-bold underline">Login</Link>
-      </div>
-
-      {
-        isError && <span className=" mt-2 text-red-500">{getErrorMessage(error)}</span>
-        // message we need is in error.data.error.message
-      }
-
     </div>
   );
 };

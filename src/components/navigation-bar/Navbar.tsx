@@ -1,9 +1,10 @@
-import { useState, useEffect, useRef, MouseEvent, ReactNode} from "react";
+
+import { useState, useEffect, useRef, MouseEvent,} from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 //import redux selector
-import { selectCurrentUser } from "../../redux/user/user-selectors";
+import { selectCurrentUser, } from "../../redux/user/user-selectors";
 
 // import components
 import ProfileWidget from "./ProfileWidget";
@@ -45,8 +46,8 @@ const Navbar = () => {
 
 
     return (
-        <div className="flex justify-between mx-auto">
-            <a href="" className="flex items-center gap-1 space-x-2" onClick={returnToHome}>
+        <div className="flex justify-between mx-auto border-b mb-8 pb-8">
+            <a href="" className="flex shrink items-center gap-1 space-x-2" onClick={returnToHome}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 -rotate-90">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
                 </svg>
@@ -55,7 +56,7 @@ const Navbar = () => {
             </a>
 
             <div 
-                className={`flex space-x-4 items-center cursor-pointer border rounded-full px-2 shadow-md shadow-gray-300 ml-40 ${isWidgetHovered ? "shadow-lg shadow-gray-400" : ""}`}
+                className={`flex shrink space-x-4 items-center cursor-pointer border rounded-full px-2 shadow-md shadow-gray-300 ${isWidgetHovered ? "shadow-lg shadow-gray-400" : ""}`}
                 onMouseEnter={() => setIsWidgetHovered(true)}
                 onMouseLeave={() => setIsWidgetHovered(false)}
                 >
@@ -71,7 +72,7 @@ const Navbar = () => {
                 </button>
             </div>
 
-            <div className="flex items-center space-x-6">
+            <div className="flex shrink-0 items-center justify-between gap-2">
                 <button 
                     className={`p-2 font-bold text-sm ${isYourHomeHovered ? "bg-slate-100 rounded-full" : ""}`}
                     onMouseEnter={() => setIsYourHomeHovered(true)}
@@ -94,7 +95,7 @@ const Navbar = () => {
 
                 <div className="relative cursor-pointer" onClick={toggleProfileWidget}>
                     <div 
-                        className={`flex p-2 space-x-2 border rounded-full items-center ${isProfileHovered ? "shadow-md" : ""}`}
+                        className={`flex shrink p-2 space-x-2 border rounded-full items-center ${isProfileHovered ? "shadow-md" : ""}`}
                         onMouseEnter={() => setIsProfileHovered(true)}
                         onMouseLeave={() => setIsProfileHovered(false)}
                         >

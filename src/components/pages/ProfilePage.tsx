@@ -7,6 +7,7 @@ import { selectCurrentUser } from '../../redux/user/user-selectors';
 import { logout } from '../../redux/user/user-reducer';
 
 //import components
+import Navbar from '../navigation-bar/Navbar';
 import { AccountNavigation } from '../AccountNavigation';
 
 export const ProfilePage = () => {
@@ -16,6 +17,7 @@ export const ProfilePage = () => {
 
   return (
     <div>
+        <Navbar></Navbar>
         <AccountNavigation></AccountNavigation>
 
         <div className="flex flex-col items-center justify-center max-w-lg mx-auto">

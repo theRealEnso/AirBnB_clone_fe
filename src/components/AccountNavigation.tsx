@@ -6,18 +6,20 @@ export const AccountNavigation = () => {
     // console.log(location);
     const {pathname} = location;
     // console.log(pathname);
+    // let splitPathName = pathname.split("/");
+    // console.log(splitPathName);
 
-    let accountPage = pathname.split("/account/")[1];
-    console.log(accountPage);
+    let accountPage = pathname.split('/')?.[2];
+    // console.log(accountPage);
     if(accountPage === undefined){
         accountPage = "profile"
     }
 
     const focusedStyles = (str = null) => {
-        let classes = "inline-flex gap-2 py-2 px-6";
+        let classes = "inline-flex gap-2 py-2 px-6 rounded-full";
 
         if(str === accountPage){
-            classes += " bg-primary text-white rounded-full";
+            classes += " bg-primary text-white";
         } else {
             classes += " shadow-md rounded-full hover:shadow-lg";
         }

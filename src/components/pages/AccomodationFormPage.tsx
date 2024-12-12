@@ -1,4 +1,4 @@
-import { useState, FormEvent} from 'react';
+import { useState, useEffect, FormEvent} from 'react';
 import { useSelector, useDispatch} from 'react-redux';
 
 //import redux selector
@@ -6,22 +6,32 @@ import { selectPlacePhotos } from '../../redux/places/places-selector';
 import { selectCurrentUser } from '../../redux/user/user-selectors';
 
 //import redux action
-import { clearPhotos } from '../../redux/places/places-reducer';
+import { clearPhotos, setUserPlaces } from '../../redux/places/places-reducer';
 
 import { useNavigate } from 'react-router-dom';
 
 //import components
+import Navbar from '../navigation-bar/Navbar';
+import { AccountNavigation } from '../AccountNavigation';
 import { PhotosUploader } from '../PhotosUploader';
 import { PerksComponent } from '../Perks';
 import { RingLoader } from 'react-spinners';
 
+import { useParams } from 'react-router-dom';
+
 //import function to send form data to api endpoint that creates a new place
-import { useCreateNewPlaceMutation } from '../../api/api-slice';
+import { useCreateNewPlaceMutation, useGetPlaceDetailsQuery, useUpdatePlaceMutation } from '../../api/api-slice';
 
 //import helper function
 import { getErrorMessage } from '../../utils';
 
-export const NewAccomodationForm = () => {
+//import typescript types
+import type { Place } from '../../redux/places/places-reducer';
+
+
+export const AccomodationFormPage = () => {
+    const {placeId} = useParams();
+    // console.log(placeId);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -39,13 +49,48 @@ export const NewAccomodationForm = () => {
     const [checkOutTime, setCheckOutTime] = useState<number | string>(0);
     const [maxGuests, setMaxGuests] = useState<number | string>(0);
 
+    const {data: placeData, refetch, isSuccess: getPlaceSuccess, isError: getPlaceError, error: placeError} = useGetPlaceDetailsQuery(placeId);
+
     const [createNewPlace, {isLoading, isSuccess, isError, error}] = useCreateNewPlaceMutation();
+
+    const [updatePlace, {data: updatedPlaceData, isLoading: updatePlaceIsLoading, isSuccess: updatePlaceIsSuccess, isError: updatePlaceIsErorr, error: updatePlaceError,}] = useUpdatePlaceMutation();
+
+
+    // console.log(placeData);
+    
+
+    useEffect(() => {
+        if(!placeId){
+            return;
+        }
+
+        if(placeId && placeData){
+            setTitle(placeData.title);
+            setAddress(placeData.address);
+            setDescription(placeData.description);
+            setPerks(placeData.perks);
+            setExtraInfo(placeData.extraInfo);
+            setCheckInTime(placeData.checkIn);
+            setCheckOutTime(placeData.checkOut);
+            setMaxGuests(placeData.maxGuests)
+        }
+
+    },[placeId, placeData])
+
+    if(!placeData){
+        return <p>Loading place details...</p>
+    }
+
+    if (getPlaceError) {
+        return <p className="text-red-500">Error loading place details: {getErrorMessage(placeError)}</p>;
+    }
+    
 
     //function for final form submission
     const submitAccomodationForm = async (event: FormEvent) => {
         event.preventDefault();
 
-        const data = {
+        const data: Place = {
             owner: owner_id,
             title,
             address,
@@ -55,17 +100,26 @@ export const NewAccomodationForm = () => {
             extraInfo,
             checkIn: checkInTime,
             checkOut: checkOutTime,
-            maxGuests
+            maxGuests,
+            _id: placeId,
         }
 
         try {
-            const result = await createNewPlace(data);
-            console.log(result);
-            await dispatch(clearPhotos());
-
-            if(isSuccess || result.data.place){
+            if(placeId){
+                await updatePlace(data).unwrap();
+                refetch();
                 navigate("/account/places");
+            } else {
+                const result = await createNewPlace(data).unwrap();
+                // console.log(result);
+                await dispatch(clearPhotos());
+    
+                if(isSuccess || result.data.place){
+                    await dispatch(setUserPlaces(result.data.place));
+                    navigate("/account/places");
+                }
             }
+
         } catch(error){
             console.log(error);
         }
@@ -74,9 +128,11 @@ export const NewAccomodationForm = () => {
     // console.log(photoUrl);
     // console.log(photos);
     // console.log(title);
-    console.log(currentUser);
+    // console.log(currentUser);
   return (
     <div>
+        <Navbar></Navbar>
+        <AccountNavigation></AccountNavigation>
         {
             isError && <span className="text-red-500">{getErrorMessage(error)}</span>
         }
@@ -99,7 +155,7 @@ export const NewAccomodationForm = () => {
             <div>
                 <h2 className="text-2xl mt-4">Description</h2>
                 <p className="text-gray-500 text-sm">{`description of the place`}</p>
-                <textarea className="w-full h-[100px] outline-none border border-gray-200 rounded-lg p-2 focus:ring-2 focus:ring-teal-500" name="description" value={description} onChange={(event) => setDescription(event.target.value)}></textarea>
+                <textarea className="w-full h-[140px] outline-none border border-gray-200 rounded-lg p-2 focus:ring-2 focus:ring-teal-500" name="description" value={description} onChange={(event) => setDescription(event.target.value)}></textarea>
             </div>
 
             {/* perks component */}
@@ -108,7 +164,7 @@ export const NewAccomodationForm = () => {
             <div>
                 <h2 className="text-2xl mt-4">Extra info</h2>
                 <p className="text-gray-500 text-sm">{`house rules, etc`}</p>
-                <textarea className="w-full h-[100px] outline-none border border-gray-200 rounded-lg p-2 focus:ring-2 focus:ring-teal-500" name="extra-info" value={extraInfo} onChange={(event) => setExtraInfo(event.target.value)}></textarea>
+                <textarea className="w-full h-[140px] outline-none border border-gray-200 rounded-lg p-2 focus:ring-2 focus:ring-teal-500" name="extra-info" value={extraInfo} onChange={(event) => setExtraInfo(event.target.value)}></textarea>
             </div>
 
             <div>

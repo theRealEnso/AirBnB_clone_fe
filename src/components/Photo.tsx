@@ -24,7 +24,7 @@ export const Photo = ({photoObject, index}: PhotoChildProps) => {
     return (
         <div 
             style={{
-                backgroundImage: `url(http://localhost:5000/temporary-photos/${photo})`
+                backgroundImage: `url(http://localhost:5000/photo-uploads/${photo})`
             }}
             className={`cursor-pointer relative w-[150px] h-[100px] rounded-2xl bg-cover bg-center bg-no-repeat`}
             onMouseEnter={() => setHoveredIndex(index)}

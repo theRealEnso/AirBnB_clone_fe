@@ -1,18 +1,45 @@
-import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 
-import { selectCurrentUser } from "../../redux/user/user-selectors";
+//import redux selectors
+// import { selectCurrentUser } from "../../redux/user/user-selectors";
+import { selectUserPlaces } from "../../redux/places/places-selector";
+
+//import redux action
+import { setUserPlaces } from "../../redux/places/places-reducer";
 
 import { Link } from "react-router-dom";
 
 //import components
+import Navbar from "../navigation-bar/Navbar";
 import { AccountNavigation } from "../AccountNavigation";
+import { PlaceSummary } from "../PlaceSummary";
+
+//import RTK query function that targets back end api endpoint that fetches all places belonging to the user
+import { useGetAllUserPlacesQuery } from "../../api/api-slice";
 
 export const PlacesPage = () => {
-    const currentUser = useSelector(selectCurrentUser);
-    console.log(currentUser);
+    const dispatch = useDispatch();
+    // const currentUser = useSelector(selectCurrentUser);
+
+    // console.log(currentUser);
+    // const {id} =  currentUser;
+
+    const {data: places, isSuccess, isLoading, isError, error} = useGetAllUserPlacesQuery();
+
+    console.log(places);
+
+    useEffect(() => {
+        if(isSuccess || places){
+            dispatch(setUserPlaces(places));
+        }
+    },[isSuccess, places, dispatch]);
+
+    console.log("places page rendered!");
 
   return (
     <div>
+        <Navbar></Navbar>
         <AccountNavigation></AccountNavigation>
 
         <div className="text-center">
@@ -23,6 +50,12 @@ export const PlacesPage = () => {
 
                 Add a new place
             </Link>
+        </div>
+
+        <div>
+            {
+                places && places.length > 0 && places.map((place) => <PlaceSummary place={place} key={place._id}></PlaceSummary>)
+            }
         </div>
     </div>
   );
