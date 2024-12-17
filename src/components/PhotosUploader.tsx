@@ -103,7 +103,7 @@ export const PhotosUploader = ({photos} : PhotosProps) => {
         {isSuccessFromLink && <span className="text-green-500">Image link uploaded successfully! </span>}
 
         <div className="flex gap-2">
-            <input className="w-full rounded-lg border p-2" type="text" placeholder="Add photos using a link . . . .jpg links only" name="photoUrl" value={photoUrl} onChange={(event) => setPhotoUrl(event.target.value)}></input>
+            <input className="w-full rounded-lg p-2 outline-none border border-gray-200 rounded-lg p-2 focus:ring-2 focus:ring-primary" type="text" placeholder="Add photos using a link . . . .jpg, png, and webp links only" name="photoUrl" value={photoUrl} onChange={(event) => setPhotoUrl(event.target.value)}></input>
             <button className="bg-primary text-white rounded-2xl p-2 px-4" onClick={uploadPhotoByLink}>
                 {
                     isLoadingFromLink ? <RingLoader size={10} color="white"></RingLoader> : "Add Photo"

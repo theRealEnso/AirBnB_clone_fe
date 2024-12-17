@@ -61,6 +61,10 @@ export const placesSlice = createSlice({
             state.place.photos = [];
         },
 
+        setPhotos: (state, action) => {
+            state.place.photos = [...action.payload]
+        },
+
         setUserPlaces: (state, action) => {
             state.listedPlaces = action.payload;
         },
@@ -116,4 +120,4 @@ export const placesSlice = createSlice({
 
 export const placesReducer = placesSlice.reducer;
 
-export const {addPhotoFromLink, addPhotosFromDevice, removePhoto, clearPhotos, setUserPlaces, setPlace} = placesSlice.actions;
+export const {addPhotoFromLink, addPhotosFromDevice, removePhoto, setPhotos, clearPhotos, setUserPlaces, setPlace} = placesSlice.actions;

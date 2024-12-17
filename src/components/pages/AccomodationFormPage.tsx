@@ -6,7 +6,7 @@ import { selectPlacePhotos } from '../../redux/places/places-selector';
 import { selectCurrentUser } from '../../redux/user/user-selectors';
 
 //import redux action
-import { clearPhotos, setUserPlaces } from '../../redux/places/places-reducer';
+import { clearPhotos, setUserPlaces, setPhotos, } from '../../redux/places/places-reducer';
 
 import { useNavigate } from 'react-router-dom';
 
@@ -42,6 +42,7 @@ export const AccomodationFormPage = () => {
     //define all state variables used on the form
     const [title, setTitle] = useState<string>("");
     const [address, setAddress] = useState<string>("");
+    const [placePhotos, setPlacePhotos] = useState([]);
     const [description, setDescription] = useState<string>("");
     const [perks, setPerks] = useState<string[]>([]);
     const [extraInfo, setExtraInfo] = useState<string>("");
@@ -49,9 +50,9 @@ export const AccomodationFormPage = () => {
     const [checkOutTime, setCheckOutTime] = useState<number | string>(0);
     const [maxGuests, setMaxGuests] = useState<number | string>(0);
 
-    const {data: placeData, refetch, isSuccess: getPlaceSuccess, isError: getPlaceError, error: placeError} = useGetPlaceDetailsQuery(placeId);
+    const {data: placeData, refetch, isSuccess: getPlaceSuccess, isError: getPlaceError, error: placeError} = useGetPlaceDetailsQuery(placeId, {skip: !placeId}); //if placeId is undefined or doesn't exist the do not execute the query
 
-    const [createNewPlace, {isLoading, isSuccess, isError, error}] = useCreateNewPlaceMutation();
+    const [createNewPlace, {data: newPlaceData, isLoading, isSuccess, isError, error}] = useCreateNewPlaceMutation();
 
     const [updatePlace, {data: updatedPlaceData, isLoading: updatePlaceIsLoading, isSuccess: updatePlaceIsSuccess, isError: updatePlaceIsErorr, error: updatePlaceError,}] = useUpdatePlaceMutation();
 
@@ -67,19 +68,30 @@ export const AccomodationFormPage = () => {
         if(placeId && placeData){
             setTitle(placeData.title);
             setAddress(placeData.address);
+            setPlacePhotos(placeData.photos);
             setDescription(placeData.description);
             setPerks(placeData.perks);
             setExtraInfo(placeData.extraInfo);
             setCheckInTime(placeData.checkIn);
             setCheckOutTime(placeData.checkOut);
-            setMaxGuests(placeData.maxGuests)
+            setMaxGuests(placeData.maxGuests);
+
+            dispatch(setPhotos(placePhotos));
         }
 
-    },[placeId, placeData])
+        if(!placeData){
+            setTitle("");
+            setAddress("");
+            setPlacePhotos([]);
+            setDescription("");
+            setPerks([]);
+            setExtraInfo("");
+            setCheckInTime(0);
+            setCheckOutTime(0);
+            setMaxGuests(0);
+        }
 
-    if(!placeData){
-        return <p>Loading place details...</p>
-    }
+    },[placeId, placeData, placePhotos, dispatch]);
 
     if (getPlaceError) {
         return <p className="text-red-500">Error loading place details: {getErrorMessage(placeError)}</p>;
@@ -94,7 +106,10 @@ export const AccomodationFormPage = () => {
             owner: owner_id,
             title,
             address,
-            photos,
+            photos: 
+                photos.length > 0 
+                ? [...photos, ...placePhotos] 
+                : [...placePhotos],
             description,
             perks,
             extraInfo,
@@ -110,14 +125,10 @@ export const AccomodationFormPage = () => {
                 refetch();
                 navigate("/account/places");
             } else {
-                const result = await createNewPlace(data).unwrap();
-                // console.log(result);
+                await createNewPlace(data).unwrap();
                 await dispatch(clearPhotos());
-    
-                if(isSuccess || result.data.place){
-                    await dispatch(setUserPlaces(result.data.place));
-                    navigate("/account/places");
-                }
+                // await dispatch(setUserPlaces(newPlaceData.place));
+                navigate("/account/places");
             }
 
         } catch(error){
@@ -140,13 +151,13 @@ export const AccomodationFormPage = () => {
             <div>
                 <h2 className="text-2xl mt-4">Title</h2>
                 <p className="text-gray-500 text-sm">{`add a cute and catchy title for your place! :)`}</p>
-                <input className="w-full rounded-lg border p-2" type="text" placeholder="title, ex: My lovely apartment!" name="title" value={title} onChange={(event) => setTitle(event.target.value)}></input>
+                <input className="w-full rounded-lg border p-2 outline-none border border-gray-200 rounded-lg p-2 focus:ring-2 focus:ring-primary" type="text" placeholder="title, ex: My lovely apartment!" name="title" value={title} onChange={(event) => setTitle(event.target.value)}></input>
             </div>
 
             <div>
                 <h2 className="text-2xl mt-4">Address</h2>
                 <p className="text-gray-500 text-sm">{`Address to this place`}</p>
-                <input className="w-full rounded-lg border p-2" type="text" name="address" value={address} placeholder="address" onChange={(event) => setAddress(event.target.value)}></input>
+                <input className="w-full rounded-lg border p-2 outline-none border border-gray-200 rounded-lg p-2 focus:ring-2 focus:ring-primary" type="text" name="address" value={address} placeholder="address" onChange={(event) => setAddress(event.target.value)}></input>
             </div>
 
             {/* photos uploader component */}
@@ -155,7 +166,7 @@ export const AccomodationFormPage = () => {
             <div>
                 <h2 className="text-2xl mt-4">Description</h2>
                 <p className="text-gray-500 text-sm">{`description of the place`}</p>
-                <textarea className="w-full h-[140px] outline-none border border-gray-200 rounded-lg p-2 focus:ring-2 focus:ring-teal-500" name="description" value={description} onChange={(event) => setDescription(event.target.value)}></textarea>
+                <textarea className="w-full h-[140px] outline-none border border-gray-200 rounded-lg p-2 focus:ring-2 focus:ring-primary" name="description" value={description} onChange={(event) => setDescription(event.target.value)}></textarea>
             </div>
 
             {/* perks component */}
@@ -164,7 +175,7 @@ export const AccomodationFormPage = () => {
             <div>
                 <h2 className="text-2xl mt-4">Extra info</h2>
                 <p className="text-gray-500 text-sm">{`house rules, etc`}</p>
-                <textarea className="w-full h-[140px] outline-none border border-gray-200 rounded-lg p-2 focus:ring-2 focus:ring-teal-500" name="extra-info" value={extraInfo} onChange={(event) => setExtraInfo(event.target.value)}></textarea>
+                <textarea className="w-full h-[140px] outline-none rounded-lg p-2 border border-gray-200 rounded-lg p-2 focus:ring-2 focus:ring-primary" name="extra-info" value={extraInfo} onChange={(event) => setExtraInfo(event.target.value)}></textarea>
             </div>
 
             <div>
@@ -173,15 +184,15 @@ export const AccomodationFormPage = () => {
                 <div className="grid gap-2 sm:grid-cols-3">
                     <div className="space-y-2">
                         <h3 className="mt-2 -mb-1">Check in time</h3>
-                        <input className="rounded-lg p-1 border" type="text" placeholder="14:00" name="check-in" value={checkInTime} onChange={(event) => setCheckInTime(event.target.value)}></input>
+                        <input className="rounded-lg p-1 outline-none border border-gray-200 rounded-lg p-2 focus:ring-2 focus:ring-primary" type="text" placeholder="14:00" name="check-in" value={checkInTime} onChange={(event) => setCheckInTime(event.target.value)}></input>
                     </div>
                     <div className="space-y-2">
                         <h3 className="mt-2 -mb-1">Check out time</h3>
-                        <input className="rounded-lg p-1 border" type="text" name="check-out" value={checkOutTime} onChange={(event) => setCheckOutTime(event.target.value)}></input>
+                        <input className="rounded-lg p-1 outline-none border border-gray-200 rounded-lg p-2 focus:ring-2 focus:ring-primary" type="text" name="check-out" value={checkOutTime} onChange={(event) => setCheckOutTime(event.target.value)}></input>
                     </div>
                     <div className="space-y-2">
                         <h3 className="mt-2 -mb-1">Max number of guests</h3>
-                        <input className="rounded-lg p-1 border" type="text" name="max-guests" value={maxGuests} onChange={(event) => setMaxGuests(event.target.value)}></input>
+                        <input className="rounded-lg p-1 outline-none border border-gray-200 rounded-lg p-2 focus:ring-2 focus:ring-primary" type="text" name="max-guests" value={maxGuests} onChange={(event) => setMaxGuests(event.target.value)}></input>
                     </div>
                 </div>
             </div>

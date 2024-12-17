@@ -54,7 +54,7 @@ export const placesApiSlice = createApi({
 
         uploadPhotoFromDevice: builder.mutation({
             query: (formData) => ({
-                url: "/upload-to-temporary",
+                url: "/upload-to-photo-uploads",
                 method: "POST",
                 body: formData,
             })
