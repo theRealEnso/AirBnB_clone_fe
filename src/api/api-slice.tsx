@@ -43,6 +43,7 @@ export const placesApiSlice = createApi({
             return headers;
         }
     }),
+    tagTypes: ["Places"], // define the tag
     endpoints: (builder) => ({
         uploadPhotoFromLink: builder.mutation({
             query: (imageUrl) => ({
@@ -72,13 +73,16 @@ export const placesApiSlice = createApi({
                 url: "/update-place",
                 method: "PUT",
                 body: data,
-            })
+            }),
+
+            invalidatesTags: ["Places"], // invalidate the tag when mutation succeeds
         }),
 
         getAllUserPlaces: builder.query({ // use builder.query for this endpoint because we are not mutating anything, just fetching data
             query: () => ({
                 url: "/get-all-places",
                 method: "GET",
+                providesTags: ["Places"], // attach tag to this query
             })
         }),
 

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 
 //import redux actions
-import { removePhoto } from "../redux/places/places-reducer";
+import { removePhoto, setMainPhoto } from "../redux/places/places-reducer";
 
 //import typescript types
 import { PhotoObject } from "./PhotosUploader";
@@ -19,16 +19,19 @@ export const Photo = ({photoObject, index}: PhotoChildProps) => {
     const dispatch = useDispatch();
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
-    const removeFile = () => dispatch(removePhoto(index))
+    const removeFile = () => dispatch(removePhoto(index));
+
+    const setPhoto = () => dispatch(setMainPhoto(index))
 
     return (
         <div 
             style={{
                 backgroundImage: `url(http://localhost:5000/photo-uploads/${photo})`
             }}
-            className={`cursor-pointer relative w-[150px] h-[100px] rounded-2xl bg-cover bg-center bg-no-repeat`}
+            className={`cursor-pointer relative w-[150px] h-[100px] rounded-2xl bg-cover bg-center bg-no-repeat opacity-80 hover:opacity-100 hover:scale-[1.05]`}
             onMouseEnter={() => setHoveredIndex(index)}
             onMouseLeave={() => setHoveredIndex(null)}
+            onClick={setPhoto}
             >
             {/* <img src={`http://localhost:5000/temporary-photos/${photo}`} className="max-w-full max-h-full object-cover"></img> */}
 

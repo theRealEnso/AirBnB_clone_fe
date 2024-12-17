@@ -7,8 +7,7 @@ import { selectUserPlaces } from "../../redux/places/places-selector";
 
 //import redux action
 import { setUserPlaces } from "../../redux/places/places-reducer";
-
-import { Link } from "react-router-dom";
+import { Link, useNavigation } from "react-router-dom";
 
 //import components
 import Navbar from "../navigation-bar/Navbar";
@@ -20,12 +19,13 @@ import { useGetAllUserPlacesQuery } from "../../api/api-slice";
 
 export const PlacesPage = () => {
     const dispatch = useDispatch();
+    const navigation = useNavigation(); // useNavigation !== useNavigate. useNavigation only provides info about the app's current navigation process(loading, submitting, or idle)
     // const currentUser = useSelector(selectCurrentUser);
 
     // console.log(currentUser);
     // const {id} =  currentUser;
 
-    const {data: places, isSuccess, isLoading, isError, error} = useGetAllUserPlacesQuery();
+    const {data: places, refetch, isSuccess, isLoading, isError, error} = useGetAllUserPlacesQuery();
 
     console.log(places);
 
@@ -36,6 +36,13 @@ export const PlacesPage = () => {
     },[isSuccess, places, dispatch]);
 
     console.log("places page rendered!");
+
+    useEffect(() => {
+        //possible values of navigation.state are either "idle", "loading", or "submitting"
+        if(navigation.state === "idle"){ //idle means the user completed the transition to PlacesPage, and the page has finished rendering
+            refetch();
+        }
+    }, [navigation.state, refetch]);
 
   return (
     <div>

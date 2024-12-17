@@ -57,12 +57,23 @@ export const placesSlice = createSlice({
             state.place.photos = updatedPhotos;
         },
 
+        setMainPhoto: (state, action) => {
+            const i = action.payload;
+            const photosArray = [...state.place.photos];
+            const selectedPhoto = photosArray.find((_, index) => index === i);
+
+            const updatedPhotos = photosArray.filter((_, index) => index !== i);
+            updatedPhotos.unshift(selectedPhoto);
+
+            state.place.photos = updatedPhotos;
+        },
+
         clearPhotos: (state) => {
             state.place.photos = [];
         },
 
         setPhotos: (state, action) => {
-            state.place.photos = [...action.payload]
+            state.place.photos = [...action.payload];
         },
 
         setUserPlaces: (state, action) => {
@@ -120,4 +131,4 @@ export const placesSlice = createSlice({
 
 export const placesReducer = placesSlice.reducer;
 
-export const {addPhotoFromLink, addPhotosFromDevice, removePhoto, setPhotos, clearPhotos, setUserPlaces, setPlace} = placesSlice.actions;
+export const {addPhotoFromLink, addPhotosFromDevice, removePhoto, setPhotos, setMainPhoto, clearPhotos, setUserPlaces, setPlace} = placesSlice.actions;
