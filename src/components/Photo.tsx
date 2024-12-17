@@ -28,7 +28,7 @@ export const Photo = ({photoObject, index}: PhotoChildProps) => {
             style={{
                 backgroundImage: `url(http://localhost:5000/photo-uploads/${photo})`
             }}
-            className={`cursor-pointer relative w-[150px] h-[100px] rounded-2xl bg-cover bg-center bg-no-repeat opacity-80 hover:opacity-100 hover:scale-[1.05]`}
+            className={`cursor-pointer relative w-full h-[100px] rounded-2xl bg-cover bg-center bg-no-repeat opacity-80 hover:opacity-100 hover:scale-[1.05]`}
             onMouseEnter={() => setHoveredIndex(index)}
             onMouseLeave={() => setHoveredIndex(null)}
             onClick={setPhoto}
