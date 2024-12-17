@@ -5,7 +5,7 @@ import { Place } from "../redux/places/places-reducer";
 export const PlaceSummary = ({place}) => {
 
     const animateBorderColorStyles = `border-2 border-transparent hover:border-primary transition-colors`;
-    const addGlowEffectStyles = `transition-shadow hover:shadow-primary/50`
+    const addGlowEffectStyles = `transition-shadow hover:shadow-primary/50 hover:scale-[1.02] transition-transform`
     // console.log(place)
     // console.log(place._id);
   return (

@@ -40,6 +40,7 @@ export const AccomodationFormPage = () => {
     const owner_id = currentUser.id;
     
     //define all state variables used on the form
+    const [owner, setOwner] = useState<string>("");
     const [title, setTitle] = useState<string>("");
     const [address, setAddress] = useState<string>("");
     const [placePhotos, setPlacePhotos] = useState([]);
@@ -66,6 +67,7 @@ export const AccomodationFormPage = () => {
         }
 
         if(placeId && placeData){
+            setOwner(placeData.owner);
             setTitle(placeData.title);
             setAddress(placeData.address);
             setPlacePhotos(placeData.photos);
@@ -80,6 +82,7 @@ export const AccomodationFormPage = () => {
         }
 
         if(!placeData){
+            setOwner("");
             setTitle("");
             setAddress("");
             setPlacePhotos([]);
@@ -103,13 +106,10 @@ export const AccomodationFormPage = () => {
         event.preventDefault();
 
         const data: Place = {
-            owner: owner_id,
+            owner,
             title,
             address,
-            photos: 
-                photos.length > 0 
-                ? [...photos, ...placePhotos] 
-                : [...placePhotos],
+            photos,
             description,
             perks,
             extraInfo,
@@ -137,7 +137,7 @@ export const AccomodationFormPage = () => {
     };
 
     // console.log(photoUrl);
-    // console.log(photos);
+    console.log(photos);
     // console.log(title);
     // console.log(currentUser);
   return (
