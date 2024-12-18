@@ -61,6 +61,13 @@ export const placesApiSlice = createApi({
             })
         }),
 
+        fetchPlaces: builder.query({
+            query: () => ({
+                url: "/view",
+                method: "GET",
+            })
+        }),
+
         createNewPlace: builder.mutation({
             query: (placeData) => ({
                 url: "/create-new-place",
@@ -97,4 +104,12 @@ export const placesApiSlice = createApi({
 });
 
 export const { useRegisterUserMutation, useLoginUserMutation } = userApiSlice;
-export const {useUploadPhotoFromLinkMutation, useUploadPhotoFromDeviceMutation, useCreateNewPlaceMutation, useGetAllUserPlacesQuery, useGetPlaceDetailsQuery, useUpdatePlaceMutation} = placesApiSlice;
+export const {
+    useUploadPhotoFromLinkMutation, 
+    useUploadPhotoFromDeviceMutation, 
+    useCreateNewPlaceMutation, 
+    useGetAllUserPlacesQuery, 
+    useGetPlaceDetailsQuery, 
+    useUpdatePlaceMutation,
+    useFetchPlacesQuery
+} = placesApiSlice;

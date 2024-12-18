@@ -46,7 +46,7 @@ const Navbar = () => {
 
 
     return (
-        <div className="flex justify-between mx-auto border-b mb-8 pb-8">
+        <div className="flex items-center justify-between mx-20 border-b mb-8 mt-2 py-4">
             <a href="" className="flex shrink items-center gap-1 space-x-2" onClick={returnToHome}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 -rotate-90">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
@@ -60,9 +60,9 @@ const Navbar = () => {
                 onMouseEnter={() => setIsWidgetHovered(true)}
                 onMouseLeave={() => setIsWidgetHovered(false)}
                 >
-                <div className="border-r-2 px-2">Anywhere</div>
-                <div className="border-r-2 pr-4">Any week</div>
-                <div>Add guests</div>
+                <div className="border-r-2 px-2 font-medium">Anywhere</div>
+                <div className="border-r-2 pr-4 font-medium">Any week</div>
+                <div className="text-gray-500 font-medium">Add guests</div>
 
                 <button className="bg-primary rounded-full text-white flex items-center justify-center p-1">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">

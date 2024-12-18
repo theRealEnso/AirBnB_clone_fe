@@ -37,19 +37,20 @@ export const AccomodationFormPage = () => {
 
     const photos = useSelector(selectPlacePhotos);
     const currentUser = useSelector(selectCurrentUser);
-    const owner_id = currentUser.id;
+    const owner_id = currentUser && currentUser.id;
     
     //define all state variables used on the form
-    const [owner, setOwner] = useState<string>("");
+    const [owner, setOwner] = useState<string | null>(owner_id);
+    const [price, setPrice] = useState<string | number>(100)
     const [title, setTitle] = useState<string>("");
     const [address, setAddress] = useState<string>("");
     const [placePhotos, setPlacePhotos] = useState([]);
     const [description, setDescription] = useState<string>("");
     const [perks, setPerks] = useState<string[]>([]);
     const [extraInfo, setExtraInfo] = useState<string>("");
-    const [checkInTime, setCheckInTime] = useState<number | string>(0);
-    const [checkOutTime, setCheckOutTime] = useState<number | string>(0);
-    const [maxGuests, setMaxGuests] = useState<number | string>(0);
+    const [checkInTime, setCheckInTime] = useState<number | string>("12:00 PM");
+    const [checkOutTime, setCheckOutTime] = useState<number | string>("2:00 PM");
+    const [maxGuests, setMaxGuests] = useState<number | string>(5);
 
     const {data: placeData, refetch, isSuccess: getPlaceSuccess, isError: getPlaceError, error: placeError} = useGetPlaceDetailsQuery(placeId, {skip: !placeId}); //if placeId is undefined or doesn't exist the do not execute the query
 
@@ -68,6 +69,7 @@ export const AccomodationFormPage = () => {
 
         if(placeId && placeData){
             setOwner(placeData.owner);
+            setPrice(placeData.price);
             setTitle(placeData.title);
             setAddress(placeData.address);
             setPlacePhotos(placeData.photos);
@@ -82,19 +84,20 @@ export const AccomodationFormPage = () => {
         }
 
         if(!placeData){
-            setOwner("");
+            setOwner(owner);
+            setPrice(0);
             setTitle("");
             setAddress("");
             setPlacePhotos([]);
             setDescription("");
             setPerks([]);
             setExtraInfo("");
-            setCheckInTime(0);
-            setCheckOutTime(0);
-            setMaxGuests(0);
+            setCheckInTime("12:00 PM");
+            setCheckOutTime("2:00 PM");
+            setMaxGuests(5);
         }
 
-    },[placeId, placeData, placePhotos, dispatch]);
+    },[placeId, placeData, placePhotos, dispatch, owner]);
 
     if (getPlaceError) {
         return <p className="text-red-500">Error loading place details: {getErrorMessage(placeError)}</p>;
@@ -107,6 +110,7 @@ export const AccomodationFormPage = () => {
 
         const data: Place = {
             owner,
+            price,
             title,
             address,
             photos,
@@ -123,6 +127,7 @@ export const AccomodationFormPage = () => {
             if(placeId){
                 await updatePlace(data).unwrap();
                 refetch();
+                dispatch(clearPhotos())
                 navigate("/account/places");
             } else {
                 await createNewPlace(data).unwrap();
@@ -137,7 +142,7 @@ export const AccomodationFormPage = () => {
     };
 
     // console.log(photoUrl);
-    console.log(photos);
+    // console.log(photos);
     // console.log(title);
     // console.log(currentUser);
   return (
@@ -148,7 +153,19 @@ export const AccomodationFormPage = () => {
             isError && <span className="text-red-500">{getErrorMessage(error)}</span>
         }
         <form className="flex flex-col space-y-2" encType="multipart/form-data" onSubmit={submitAccomodationForm}>
-            <div>
+            <div className="flex flex-col justify-end w-[30%] ml-auto">
+                <h2> $ / night</h2>
+                <p className="text-gray-500 text-sm">set your price per night (USD)</p>
+                <input 
+                    type="text" 
+                    className="w-full rounded-lg border p-2 outline-none border border-gray-200 rounded-lg p-2 focus:ring-2 focus:ring-primary" placeholder="$100"
+                    value={price}
+                    onChange={(event) => setPrice(event.target.value)}
+                    >
+                </input>
+            </div>
+
+            <div className="">
                 <h2 className="text-2xl mt-4">Title</h2>
                 <p className="text-gray-500 text-sm">{`add a cute and catchy title for your place! :)`}</p>
                 <input className="w-full rounded-lg border p-2 outline-none border border-gray-200 rounded-lg p-2 focus:ring-2 focus:ring-primary" type="text" placeholder="title, ex: My lovely apartment!" name="title" value={title} onChange={(event) => setTitle(event.target.value)}></input>
@@ -197,7 +214,7 @@ export const AccomodationFormPage = () => {
                 </div>
             </div>
 
-            <button className="bg-primary text-white rounded-lg my-4 py-2">
+            <button className="flex items-center justify-center bg-primary text-white rounded-lg my-4 py-2 w-[50%] mx-auto">
                 {
                     isLoading ? <RingLoader size={10} color="white"></RingLoader> : "Save"
                 }

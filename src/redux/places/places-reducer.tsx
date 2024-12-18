@@ -2,6 +2,7 @@ import { createSlice} from "@reduxjs/toolkit";
 
 export type Place = {
     owner: string;
+    price: number | string;
     title: string;
     address: string;
     photos: string[],
@@ -22,6 +23,7 @@ type PlaceProps = {
 const PLACES_INITIAL_STATE: PlaceProps = {
     place: {
         owner: "",
+        price: 0,
         title: "",
         address: "",
         photos: [],

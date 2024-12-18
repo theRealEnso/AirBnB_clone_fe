@@ -25,6 +25,7 @@ export type PhotosProps = {
 }
 
 export const PhotosUploader = ({photos} : PhotosProps) => {
+    // console.log(photos);
     const dispatch = useDispatch();
     const uploadImageButtonRef = useRef<HTMLInputElement | null>(null);
 

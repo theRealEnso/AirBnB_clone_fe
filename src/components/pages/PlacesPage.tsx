@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { selectUserPlaces } from "../../redux/places/places-selector";
 
 //import redux action
-import { setUserPlaces } from "../../redux/places/places-reducer";
+import { setUserPlaces, clearPhotos } from "../../redux/places/places-reducer";
 import { Link, useNavigation } from "react-router-dom";
 
 //import components
@@ -41,8 +41,9 @@ export const PlacesPage = () => {
         //possible values of navigation.state are either "idle", "loading", or "submitting"
         if(navigation.state === "idle"){ //idle means the user completed the transition to PlacesPage, and the page has finished rendering
             refetch();
+            dispatch(clearPhotos());
         }
-    }, [navigation.state, refetch]);
+    }, [navigation.state, refetch, dispatch]);
 
   return (
     <div>

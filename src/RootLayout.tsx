@@ -3,7 +3,7 @@ import Navbar from "./components/navigation-bar/Navbar";
 
 const RootLayout = () => {
   return (
-    <div className="px-10 py-4">
+    <div className="">
       {/* <Navbar /> */}
       
       <main>

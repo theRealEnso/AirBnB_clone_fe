@@ -18,6 +18,10 @@ const ProfileWidget = forwardRef<HTMLDivElement>(({showProfileWidget}, ref) => {
         navigate("/login");
     };
 
+    const navigateToAccountPlaces = () => {
+        navigate("/account/places")
+    }
+
     const signOut = () => dispatch(logout());
 
     return (
@@ -29,7 +33,7 @@ const ProfileWidget = forwardRef<HTMLDivElement>(({showProfileWidget}, ref) => {
                 <li className="w-full px-4 py-2 hover:bg-gray-200" onClick={navigateToLogin}>Log in</li>
                 <li className="w-full px-4 py-2 hover:bg-gray-200 border-b" onClick={signOut}>Sign out</li>
                 <li className="w-full px-4 py-2 hover:bg-gray-200">Gift cards</li>
-                <li className="w-full px-4 py-2 hover:bg-gray-200">Airbnb your home</li>
+                <li className="w-full px-4 py-2 hover:bg-gray-200" onClick={navigateToAccountPlaces}>Airbnb your home</li>
                 <li className="w-full px-4 py-2 hover:bg-gray-200">Host an experience</li>
                 <li className="w-full px-4 py-2 hover:bg-gray-200">Help Center</li>
             </ul>

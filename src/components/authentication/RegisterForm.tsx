@@ -1,5 +1,5 @@
 import { useState, FormEvent, ChangeEvent} from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { selectCurrentUser} from "../../redux/user/user-selectors";
 
 import axios from "axios";
@@ -17,6 +17,7 @@ import { RiseLoader } from "react-spinners";
 
 //import utility functions
 import { getErrorMessage } from "../../utils";
+import { setUser } from "../../redux/user/user-reducer";
 
 //environment variables
 const cloudinary_key = import.meta.env.VITE_REACT_APP_CLOUDINARY_UNSIGNED_UPLOAD_PRESET_NAME;
@@ -44,6 +45,7 @@ const RegisterForm = () => {
 
   const navigate = useNavigate();
   const currentUser = useSelector(selectCurrentUser);
+  const dispatch = useDispatch();
 
   const [formInputs, setFormInputs] = useState<RegisterFormInputs>({
     firstName: "",
@@ -56,7 +58,7 @@ const RegisterForm = () => {
   const [errors, setErrors] = useState<FormErrors>({});
   const [readablePicture, setReadablePicture] = useState<string>("");
   const [pictureError, setPictureError] = useState<string>("")
-  const [registerUser, {isLoading, isSuccess, isError, error}] = useRegisterUserMutation();
+  const [registerUser, {data: userData, isLoading, isSuccess, isError, error}] = useRegisterUserMutation();
 
   const {firstName, lastName, email, password, confirmPassword} = formInputs;
 
@@ -132,9 +134,11 @@ const RegisterForm = () => {
         if(readablePicture){
           const uploadedPicture = await uploadPictureToCloudinary();
           const storedImageUrl = uploadedPicture.secure_url;
-          const {user} = await registerUser({...formInputs, picture: storedImageUrl}).unwrap(); //unwrap will provide us with the raw response from the server
-          if(isSuccess || currentUser || user){
-            alert("Form submitted successfully!");
+          const result = await registerUser({...formInputs, picture: storedImageUrl}).unwrap(); //unwrap will provide us with the raw response from the server
+          await dispatch(setUser(result.user))
+          console.log(result)
+          if(result.user || userData || currentUser){
+            // alert("Form submitted successfully!");
             clearFormInputs();
             navigate("/account");
           }
@@ -152,7 +156,7 @@ const RegisterForm = () => {
   };
 
   // console.log(formInputs);
-  console.log(currentUser);
+  // console.log(currentUser);
 
   // if(isError){
   //   console.log(error);
