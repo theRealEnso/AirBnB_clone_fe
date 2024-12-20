@@ -35,11 +35,8 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: (
-          <ProtectedRoute>
-            <App></App>
-          </ProtectedRoute>
-        )
+        element: <App></App>
+
       },
 
       {
@@ -95,6 +92,11 @@ const router = createBrowserRouter([
             <AccomodationFormPage></AccomodationFormPage>
           </ProtectedRoute>
         )
+      },
+
+      {
+        path: `/places/:placeId`,
+        element: <PlaceDetails></PlaceDetails>
       }
     ]
   }

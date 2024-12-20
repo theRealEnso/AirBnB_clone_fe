@@ -1,7 +1,17 @@
-export const PlaceCard = ({place}) => {
+import { Link } from "react-router-dom";
+
+//import typescript types
+import { Place } from "../redux/places/places-reducer";
+
+
+type PlaceProps = {
+    place: Place
+};
+
+export const PlaceCard = ({place}: PlaceProps) => {
   return (
-    <div className="flex flex-col cursor-pointer">
-        <div className="w-full h-40 sm:h-48 md:h-48 lg:h-56 rounded-2xl">
+    <Link to={`/places/${place._id}`} className="flex flex-col cursor-pointer">
+        <div className="w-full h-40 sm:h-48 md:h-48 lg:h-56 rounded-2xl aspect-square">
             <img src={`http://localhost:5000/photo-uploads/${place.photos[0].photo}`} className="object-cover w-full h-full rounded-2xl"></img>
         </div>
 
@@ -20,6 +30,6 @@ export const PlaceCard = ({place}) => {
         <div>
             <p className="font-medium text-xs sm:text-sm text-gray-500">{`$${place.price} USD night`}</p>
         </div>
-    </div>
+    </Link>
   );
 };

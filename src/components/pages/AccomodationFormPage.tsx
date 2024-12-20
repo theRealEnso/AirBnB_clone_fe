@@ -11,7 +11,6 @@ import { clearPhotos, setUserPlaces, setPhotos, } from '../../redux/places/place
 import { useNavigate } from 'react-router-dom';
 
 //import components
-import Navbar from '../navigation-bar/Navbar';
 import { AccountNavigation } from '../AccountNavigation';
 import { PhotosUploader } from '../PhotosUploader';
 import { PerksComponent } from '../Perks';
@@ -147,7 +146,6 @@ export const AccomodationFormPage = () => {
     // console.log(currentUser);
   return (
     <div>
-        <Navbar></Navbar>
         <AccountNavigation></AccountNavigation>
         {
             isError && <span className="text-red-500">{getErrorMessage(error)}</span>

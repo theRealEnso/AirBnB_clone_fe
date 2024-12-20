@@ -46,17 +46,19 @@ const Navbar = () => {
 
 
     return (
-        <div className="flex items-center justify-between mx-20 border-b mb-8 mt-2 py-4">
-            <a href="" className="flex shrink items-center gap-1 space-x-2" onClick={returnToHome}>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 -rotate-90">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
-                </svg>
+        <div className="flex items-center justify-between border-b mb-8 mt-2 py-4 mx-24">
+            <div>
+                <a href="" className="flex shrink items-center gap-1 space-x-2" onClick={returnToHome}>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 -rotate-90">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+                    </svg>
 
-                <span className="font-bold text-xl">AirBnB</span>
-            </a>
+                    <span className="font-bold text-xl">AirBnB</span>
+                </a>
+            </div>
 
             <div 
-                className={`flex shrink space-x-4 items-center cursor-pointer border rounded-full px-2 shadow-md shadow-gray-300 ${isWidgetHovered ? "shadow-lg shadow-gray-400" : ""}`}
+                className={`flex shrink space-x-4 items-center cursor-pointer border rounded-full p-2 shadow-md shadow-gray-300 ${isWidgetHovered ? "shadow-lg shadow-gray-400" : ""}`}
                 onMouseEnter={() => setIsWidgetHovered(true)}
                 onMouseLeave={() => setIsWidgetHovered(false)}
                 >

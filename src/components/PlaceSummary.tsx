@@ -1,8 +1,13 @@
 import { Link } from "react-router-dom"
 
+//import typescript types
 import { Place } from "../redux/places/places-reducer";
 
-export const PlaceSummary = ({place}) => {
+type PlaceProps = {
+    place: Place
+}
+
+export const PlaceSummary = ({place}: PlaceProps) => {
 
     const animateBorderColorStyles = `border-2 border-transparent hover:border-primary transition-colors`;
     const addGlowEffectStyles = `transition-shadow hover:shadow-primary/50 hover:scale-[1.02] transition-transform`

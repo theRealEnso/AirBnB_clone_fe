@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 
 //import components
-import Navbar from "../navigation-bar/Navbar";
 import { FormInput } from "./FormInput";
 import { RiseLoader } from "react-spinners";
 
@@ -78,8 +77,6 @@ const LoginForm = () => {
 
   return (
     <div>
-      <Navbar></Navbar>
-      
       <div className="flex items-center justify-center min-h-screen flex-col m-auto">
         <div className="flex flex-col items-center justify-center mb-6">
           <h1 className="mb-4 text-2xl font-bold tracking-wide">Welcome back!</h1>

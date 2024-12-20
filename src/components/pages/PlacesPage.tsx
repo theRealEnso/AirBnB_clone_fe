@@ -10,7 +10,6 @@ import { setUserPlaces, clearPhotos } from "../../redux/places/places-reducer";
 import { Link, useNavigation } from "react-router-dom";
 
 //import components
-import Navbar from "../navigation-bar/Navbar";
 import { AccountNavigation } from "../AccountNavigation";
 import { PlaceSummary } from "../PlaceSummary";
 
@@ -35,7 +34,7 @@ export const PlacesPage = () => {
         }
     },[isSuccess, places, dispatch]);
 
-    console.log("places page rendered!");
+    // console.log("places page rendered!");
 
     useEffect(() => {
         //possible values of navigation.state are either "idle", "loading", or "submitting"
@@ -47,7 +46,6 @@ export const PlacesPage = () => {
 
   return (
     <div>
-        <Navbar></Navbar>
         <AccountNavigation></AccountNavigation>
 
         <div className="text-center">

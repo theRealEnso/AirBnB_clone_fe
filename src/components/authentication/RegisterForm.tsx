@@ -10,7 +10,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { useRegisterUserMutation } from "../../api/api-slice";
 
 //import components
-import Navbar from "../navigation-bar/Navbar";
 import { FormInput } from "./FormInput";
 import { PictureInput } from "./PictureInput";
 import { RiseLoader } from "react-spinners";
@@ -165,7 +164,6 @@ const RegisterForm = () => {
 
   return (
     <div>
-      <Navbar></Navbar>
       <div className="flex items-center justify-center min-h-screen flex-col m-auto">
         
 
