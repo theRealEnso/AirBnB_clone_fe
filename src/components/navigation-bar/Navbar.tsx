@@ -20,7 +20,7 @@ const Navbar = () => {
     const [isWidgetHovered, setIsWidgetHovered] = useState<boolean>(false);
     const [showProfileWidget, setShowProfileWidget] = useState<boolean>(false);
 
-    const profileWidgetRef = useRef<HTMLDivElement | null>(null);
+    const profileWidgetRef = useRef<HTMLDivElement | null | undefined>(null);
 
     const toggleProfileWidget = (event: MouseEvent) => {
         event.stopPropagation();
@@ -32,8 +32,12 @@ const Navbar = () => {
         navigate("/");
     };
 
+    //css styles for animating the ProfileWidget component
+    const slideDown = "opacity-100 pointer-events-auto -translate-x-20 translate-y-2 transition-all";
+    const hideMenu =  "opacity-0 pointer-events-none -translate-x-20 -translate-y-10";
+
     useEffect(() => {
-        const handleOutsideMenuClick = (event: MouseEvent) => {
+        const handleOutsideMenuClick = (event) => {
             if(profileWidgetRef.current && !profileWidgetRef.current.contains(event.target)){
                 setShowProfileWidget(false);
             }
@@ -95,7 +99,7 @@ const Navbar = () => {
 
                 </button>
 
-                <div className="relative cursor-pointer" onClick={toggleProfileWidget}>
+                <div className="cursor-pointer relative" onClick={toggleProfileWidget}>
                     <div 
                         className={`flex shrink p-2 space-x-2 border rounded-full items-center ${isProfileHovered ? "shadow-md" : ""}`}
                         onMouseEnter={() => setIsProfileHovered(true)}
@@ -112,7 +116,7 @@ const Navbar = () => {
                                 currentUser && currentUser.picture || access_token && access_token.length > 0
                                     ? (
                                         
-                                        <img src={currentUser.picture} alt="profile picture" className="w-[30px] h-[30px] object-fit rounded-full"></img>
+                                        <img src={currentUser && currentUser.picture} alt="profile picture" className="w-[30px] h-[30px] object-fit rounded-full"></img>
                                     )
                                     : (
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-8">
@@ -124,10 +128,12 @@ const Navbar = () => {
                         </span>
 
                     </div>
+                    <div className={`absolute z-1000 bg-white w-[200px] border-white shadow-lg rounded-lg ${showProfileWidget ? `${slideDown}` : `${hideMenu}`}`}>
+                        {
+                            showProfileWidget && <ProfileWidget showProfileWidget={showProfileWidget} profileWidgetRef={profileWidgetRef}></ProfileWidget>
+                        } 
+                    </div>
 
-                    {
-                        showProfileWidget && <ProfileWidget showProfileWidget={showProfileWidget} ref={profileWidgetRef}></ProfileWidget>
-                    }
                 </div>
             </div>
 

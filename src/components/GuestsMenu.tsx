@@ -1,3 +1,17 @@
+type GuestsMenuProps = {
+    setDisplayGuestsMenu: React.Dispatch<React.SetStateAction<boolean>>;
+    numberOfAdults: number;
+    setNumberOfAdults: React.Dispatch<React.SetStateAction<number>>;
+    numberOfChildren: number;
+    setNumberOfChildren: React.Dispatch<React.SetStateAction<number>>;
+    numberOfInfants: number;
+    setNumberOfInfants: React.Dispatch<React.SetStateAction<number>>;
+    numberOfPets: number;
+    setNumberOfPets: React.Dispatch<React.SetStateAction<number>>;
+    maxGuests: string | number;
+    guestsMenuRef: React.RefObject<HTMLDivElement | null>;
+}
+
 export const GuestsMenu = ({
     numberOfAdults, 
     setNumberOfAdults, 
@@ -10,7 +24,7 @@ export const GuestsMenu = ({
     maxGuests,
     setDisplayGuestsMenu,
     guestsMenuRef,
-}) => {
+}: GuestsMenuProps) => {
 
         const incrementAdults = () => {
             setNumberOfAdults(numberOfAdults + 1);
@@ -49,7 +63,7 @@ export const GuestsMenu = ({
             }
         };
 
-        const closeGuestsMenu = (event) => {
+        const closeGuestsMenu = () => {
             setDisplayGuestsMenu(false);
         }
 

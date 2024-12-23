@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef} from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 
@@ -12,39 +12,42 @@ import { selectPlace } from "../redux/places/places-selector";
 
 //import components
 import { PhotoViewer } from "./PhotoViewer";
-import { GuestsMenu } from "./GuestsMenu";
-
-//import material UI components
-import BasicDatePicker from "./BasicDatePicker";
-
+import { BookingWidget } from "./BookingWidget";
+import { ExtraInformation } from "./ExtraInformation";
 
 //import query function from api to get details about a specific place
 import { useGetPlaceDetailsQuery } from "../api/api-slice";
 
+//import utility function
+import { truncateString } from "../utils";
+
+type PhotoProps = {
+    tempId: string;
+    photo: string;
+};
+
 export const PlaceDetails = () => {
+    const currentPlace = useSelector(selectPlace);
     const dispatch = useDispatch();
     const {placeId} = useParams();
     console.log(placeId);
 
     const [showPhotos, setShowPhotos] = useState<boolean>(false);
+    const [showMore, setShowMore] = useState<boolean>(false);
     const [displayGuestsMenu, setDisplayGuestsMenu] = useState<boolean>(false);
     const [numberOfAdults, setNumberOfAdults] = useState<number>(1);
     const [numberOfChildren, setNumberOfChildren] = useState<number>(0);
     const [numberOfInfants, setNumberOfInfants] = useState<number>(0);
     const [numberOfPets, setNumberOfPets] = useState<number>(0);
+    const [isSticky, setIsSticky] = useState(false);
 
-    const currentPlace = useSelector(selectPlace);
-
-    const {data: placeDetails, isLoading, isSuccess, isError, error} = useGetPlaceDetailsQuery(placeId);
+    const {data: placeDetails, isLoading, isSuccess} = useGetPlaceDetailsQuery(placeId);
 
     // console.log(placeDetails);
 
     const guestsMenuRef = useRef<HTMLDivElement | null>(null);
-
-    const toggleGuestMenu = (event) => {
-        event.stopPropagation();
-        setDisplayGuestsMenu(!displayGuestsMenu);
-    }
+    const imagesRef = useRef<HTMLDivElement | null>(null);
+    const bookingWidgetRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
         if(isSuccess || placeDetails){
@@ -52,6 +55,7 @@ export const PlaceDetails = () => {
         }
     }, [dispatch, placeDetails, isSuccess]);
 
+    //useEffect to handle closing the menu dropdown in the booking widget when user clicks anywhere outside of it
     useEffect(() => {
         const handleOutsideClick = (event) => {
             if(guestsMenuRef.current && !guestsMenuRef.current.contains(event.target)){
@@ -63,15 +67,31 @@ export const PlaceDetails = () => {
         return () => document.body.removeEventListener("click", handleOutsideClick);
 
     },[setDisplayGuestsMenu]);
-    
 
+    //to handle sticky
+    useEffect(() => {
+        const handleScroll = () => {
+            if (imagesRef.current && bookingWidgetRef.current) {
+                const imagesTop = imagesRef.current.getBoundingClientRect().top;
+                // When the images block is scrolled past, make the BookingWidget sticky
+                console.log('imagesTop:', imagesTop); // Debugging line
+                setIsSticky(imagesTop <= -410);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+    
+    console.log(isSticky);
     return (
         <>
             {
                 showPhotos ? <PhotoViewer currentPlace={currentPlace} setShowPhotos={setShowPhotos}></PhotoViewer> :
                 placeDetails ? (
                     (() => {
-                        const {title, address, description, photos, price, checkIn, checkOut, maxGuests} = placeDetails;
+                        const {title, address, description, photos, price, extraInfo, checkIn, checkOut, maxGuests} = placeDetails;
 
                         return (
                             <div className="mt-2 max-w-[1000px] mx-auto min-h-screen">
@@ -97,16 +117,20 @@ export const PlaceDetails = () => {
                 
                 
                                 {/* Display images */}
-                                <div className="grid gap-2 grid-cols-2 rounded-lg overflow-hidden relative" onClick={() => setShowPhotos(true)}>
+                                <div 
+                                    className="grid gap-2 grid-cols-2 rounded-lg relative mb-8" 
+                                    onClick={() => setShowPhotos(true)}
+                                    ref={imagesRef}
+                                    >
                                     {/* left image */}
                                     <div className="w-full h-full aspect-square cursor-pointer overflow-hidden">
                                         <img src={`http://localhost:5000/photo-uploads/${photos[0].photo}`} className="object-cover w-full h-full rounded-lg transition-all duration-500 ease-in-out hover:scale-110"></img> 
                                     </div>
         
                                     {/* right 2x2 grid */}
-                                    <div className="grid grid-cols-2 gap-2 overflow-hidden">
+                                    <div className="grid grid-cols-2 gap-2">
                                         {
-                                            photos.slice(1, 5).map((photo) => {
+                                            photos.slice(1, 5).map((photo: PhotoProps) => {
                                                 return (
                                                     <div key={photo.photo} className="aspect-square overflow-hidden cursor-pointer">
                                                         <img src={`http://localhost:5000/photo-uploads/${photo.photo}`} className="object-cover w-full h-full rounded-lg transition-all duration-500 ease-in-out hover:scale-110"></img>
@@ -125,99 +149,69 @@ export const PlaceDetails = () => {
                                     </button>
                                 </div>
         
-                                {/* description */}
-                                <div className="my-4">
-                                    <h2 className="font-semibold text-2xl">Description</h2>
-                                    {description}
-                                </div>
-        
-                                {/*check in and out  */}
-                                <div className="grid grid-cols-2">
+                                <div className="grid grid-cols-1 md:grid-cols-[3fr_1fr] gap-12 relative">
+                                    <div className="">
+                                    {/* description */}
+                                        <div className="my-4">
+                                            <h2 className="font-semibold text-2xl mb-2">Description</h2>
+                                            <p style={{whiteSpace: 'pre-wrap'}}>{description}</p>
+                                        </div>
+
+                                        {/* check in and check out times */}
                                         <div>
                                             Check-in: {checkIn} <br />
                                             Check-out: {checkOut} <br />
                                             Max number of guests: {maxGuests}
                                         </div>
-                                        <div className="bg-white shadow-md p-4 rounded-2xl flex flex-col">
-                                            <div className="text-center mb-2">
-                                                Price: ${price} / night
+                                        {/* extra info / house rules, etc */}
+                                        <div className="mt-4 border-y-2 relative">
+                                            <h1 className="font-bold text-2xl mt-4">Extra information</h1>
+                                            <p style={{whiteSpace: 'pre-wrap'}}>{truncateString(extraInfo, 500)}</p>
+                                            <div className="mt-4 flex items-center gap-2 cursor-pointer" onClick={() => setShowMore(true)}>
+                                                <button className="font-bold tracking-wide underline">Show more</button>
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                                                </svg>
                                             </div>
-                                            <div className="flex flex-col mb-2">
-                                                <div className="flex">
-                                                    <div>
-                                                        <BasicDatePicker label="Check in"></BasicDatePicker>
-                                                    </div>
-                                                    <div>
-                                                        <BasicDatePicker label="Check out"></BasicDatePicker>
-                                                    </div>
-                                                </div>
-        
-                                                <div className="relative">
-                                                    <button className="border-2 p-4 w-full text-left flex justify-between" onClick={toggleGuestMenu}>
-                                                        <div className="flex">
-                                                            <span> 
-                                                                {
-                                                                    
-                                                                    numberOfAdults + numberOfChildren === 1 ? `1 guest`
-                                                                    : numberOfAdults + numberOfChildren > 1 ? `${numberOfAdults + numberOfChildren} guests`
-                                                                    : null
-                                                                }
-                                                            </span>
-                                                            <span>
-                                                                {
-                                                                    numberOfInfants === 1 ? `, 1 infant`
-                                                                    : numberOfInfants > 1 ? `, ${numberOfInfants} infants`
-                                                                    : null
-                                                                }
-                                                            </span>
-                                                            <span>
-                                                                {
-                                                                    numberOfPets === 1 ? `, 1 pet`
-                                                                    : numberOfPets > 1 ? `, ${numberOfPets} pets`
-                                                                    : null
-                                                                }
-                                                            </span>
+                                            
+                                            {
+                                                showMore && 
+                                                    (
+                                                        // top div creates the dark overlay
+                                                        <div
+                                                        className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 transition-opacity duration-300"
+                                                        onClick={() => setShowMore(false)}>
+                                                            {/* inner div creates the modal / white area to display the full text */}
+                                                            <div
+                                                                className="bg-white p-8 rounded-lg max-w-4xl w-[90%] max-h-[80vh] overflow-y-auto transition-transform transform animate-slide-up"
+                                                                onClick={(e) => e.stopPropagation()}>
+                                                                <ExtraInformation extraInfo={extraInfo} setShowMore={setShowMore} />
+                                                            </div>
                                                         </div>
-                                                        
-
-                                                        {
-                                                            displayGuestsMenu ? (
-                                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                                                                    <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
-                                                                </svg>   
-                                                            ) : (
-                                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                                                                    <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                                                                </svg>
-                                                            )
-                                                        }                                                 
-                    
-                                                    </button>
-        
-                                                    {
-                                                        displayGuestsMenu && 
-                                                        (
-                                                            <GuestsMenu 
-                                                                numberOfAdults={numberOfAdults}
-                                                                setNumberOfAdults={setNumberOfAdults} 
-                                                                numberOfChildren={numberOfChildren}
-                                                                setNumberOfChildren={setNumberOfChildren}
-                                                                numberOfInfants={numberOfInfants}
-                                                                setNumberOfInfants={setNumberOfInfants}  
-                                                                numberOfPets={numberOfPets}
-                                                                setNumberOfPets={setNumberOfPets}
-                                                                maxGuests={maxGuests}
-                                                                setDisplayGuestsMenu={setDisplayGuestsMenu}
-                                                                guestsMenuRef={guestsMenuRef}
-                                                                > 
-                                                            </GuestsMenu>
-                                                        )
-                                                    }
-                                                </div>
-                                            </div>
-        
-                                            <button className="bg-primary rounded-lg text-white p-2">Book place</button>
+                                                    )
+                                                }
                                         </div>
+                                    </div>
+
+                                    {/* booking widget component */}
+                                    <div className={`${isSticky ? "sticky z-10" : ""}`} ref={bookingWidgetRef}>
+                                        <BookingWidget
+                                            price={price} 
+                                            displayGuestsMenu={displayGuestsMenu}
+                                            setDisplayGuestsMenu={setDisplayGuestsMenu}
+                                            numberOfAdults={numberOfAdults}
+                                            setNumberOfAdults={setNumberOfAdults}
+                                            numberOfChildren={numberOfChildren}
+                                            setNumberOfChildren={setNumberOfChildren}
+                                            numberOfInfants={numberOfInfants}
+                                            setNumberOfInfants={setNumberOfInfants}
+                                            numberOfPets={numberOfPets}
+                                            setNumberOfPets={setNumberOfPets}
+                                            maxGuests={maxGuests}
+                                            guestsMenuRef={guestsMenuRef}
+                                            >
+                                        </BookingWidget>
+                                    </div>
                                 </div>
                             </div>
                         )
