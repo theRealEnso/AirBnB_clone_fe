@@ -9,6 +9,7 @@ type PlaceProps = {
 };
 
 export const PlaceCard = ({place}: PlaceProps) => {
+    const {street, postalCode, city, country} = place.address;
   return (
     <Link to={`/places/${place._id}`} className="flex flex-col cursor-pointer">
         <div className="w-full h-40 sm:h-48 md:h-48 lg:h-56 rounded-2xl aspect-square">
@@ -16,7 +17,7 @@ export const PlaceCard = ({place}: PlaceProps) => {
         </div>
 
         <div className="flex justify-between mt-2 sm:mt-2">
-            <h4 className="font-medium text-sm sm:text-base tracking-wide">{place.address}</h4>
+            <h4 className="font-medium text-sm sm:text-base tracking-wide">{`${street}, ${postalCode}, ${city}, ${country}`}</h4>
 
             <div className="flex gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">

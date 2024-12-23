@@ -4,7 +4,12 @@ export type Place = {
     owner: string;
     price: number | string;
     title: string;
-    address: string;
+    address: {
+        street: string;
+        postalCode: string;
+        city: string;
+        country: string;
+    },
     photos: string[],
     description: string;
     perks: string[];
@@ -25,7 +30,12 @@ const PLACES_INITIAL_STATE: PlaceProps = {
         owner: "",
         price: 0,
         title: "",
-        address: "",
+        address: {
+            street: "",
+            postalCode: "",
+            city: "",
+            country: "",
+        },
         photos: [],
         description: "",
         perks: [],

@@ -30,7 +30,7 @@ export const PlaceSummary = ({place}: PlaceProps) => {
             }
             <div className="flex flex-col">
                 <h1 className="text-xl tracking-wide">{place.title}</h1>
-                <h3 className="text-md">{place.address}</h3>
+                <h3 className="text-md">{`${place.address.street}, ${place.address.postalCode}, ${place.address.city}, ${place.address.country}`}</h3>
 
                 <div className="border-t-4">
                     <p className="text-sm">{place.description}</p>

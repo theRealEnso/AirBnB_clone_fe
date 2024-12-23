@@ -1,4 +1,4 @@
-import { useState, useEffect, FormEvent} from 'react';
+import { useState, useEffect, FormEvent, ChangeEvent} from 'react';
 import { useSelector, useDispatch} from 'react-redux';
 
 //import redux selector
@@ -42,7 +42,12 @@ export const AccomodationFormPage = () => {
     const [owner, setOwner] = useState<string | null>(owner_id);
     const [price, setPrice] = useState<string | number>(100)
     const [title, setTitle] = useState<string>("");
-    const [address, setAddress] = useState<string>("");
+    const [address, setAddress] = useState({
+        street: "",
+        postalCode: "",
+        city: "",
+        country: "",
+    });
     const [placePhotos, setPlacePhotos] = useState([]);
     const [description, setDescription] = useState<string>("");
     const [perks, setPerks] = useState<string[]>([]);
@@ -59,6 +64,14 @@ export const AccomodationFormPage = () => {
 
 
     // console.log(placeData);
+
+    const handleAddressInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const {name, value} = event.target;
+        setAddress({
+            ...address,
+            [name]: value,
+        })
+    }
     
 
     useEffect(() => {
@@ -145,7 +158,7 @@ export const AccomodationFormPage = () => {
     // console.log(title);
     // console.log(currentUser);
   return (
-    <div>
+    <div className="mx-24">
         <AccountNavigation></AccountNavigation>
         {
             isError && <span className="text-red-500">{getErrorMessage(error)}</span>
@@ -169,10 +182,20 @@ export const AccomodationFormPage = () => {
                 <input className="w-full rounded-lg border p-2 outline-none border border-gray-200 rounded-lg p-2 focus:ring-2 focus:ring-primary" type="text" placeholder="title, ex: My lovely apartment!" name="title" value={title} onChange={(event) => setTitle(event.target.value)}></input>
             </div>
 
-            <div>
+            <div className="space-y-2">
                 <h2 className="text-2xl mt-4">Address</h2>
                 <p className="text-gray-500 text-sm">{`Address to this place`}</p>
-                <input className="w-full rounded-lg border p-2 outline-none border border-gray-200 rounded-lg p-2 focus:ring-2 focus:ring-primary" type="text" name="address" value={address} placeholder="address" onChange={(event) => setAddress(event.target.value)}></input>
+
+                <div className="flex gap-2">
+                    <input className="w-full rounded-lg border p-2 outline-none border border-gray-200 rounded-lg p-2 focus:ring-2 focus:ring-primary" type="text" name="street" value={address.street} placeholder="Street Address" onChange={handleAddressInputChange}></input>
+                    <input className="w-full rounded-lg border p-2 outline-none border border-gray-200 rounded-lg p-2 focus:ring-2 focus:ring-primary" type="text" name="postalCode" value={address.postalCode} placeholder="Postal Code" onChange={handleAddressInputChange}></input>
+                </div>
+
+                <div className="flex gap-2">
+                    <input className="w-full rounded-lg border p-2 outline-none border border-gray-200 rounded-lg p-2 focus:ring-2 focus:ring-primary" type="text" name="city" value={address.city} placeholder="City" onChange={handleAddressInputChange}></input>
+                    <input className="w-full rounded-lg border p-2 outline-none border border-gray-200 rounded-lg p-2 focus:ring-2 focus:ring-primary" type="text" name="country" value={address.country} placeholder="Country" onChange={handleAddressInputChange}></input>
+                </div>
+
             </div>
 
             {/* photos uploader component */}

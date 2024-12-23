@@ -45,7 +45,7 @@ export const PlacesPage = () => {
     }, [navigation.state, refetch, dispatch]);
 
   return (
-    <div>
+    <div className="mx-24">
         <AccountNavigation></AccountNavigation>
 
         <div className="text-center">
