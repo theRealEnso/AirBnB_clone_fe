@@ -21,6 +21,7 @@ import { BookingsPage } from './components/BookingsPage.tsx';
 import { AccomodationFormPage } from './components/pages/AccomodationFormPage.tsx';
 import { PlacesPage } from './components/pages/PlacesPage.tsx';
 import { PlaceDetails } from './components/PlaceDetails.tsx';
+import { BookingSummary } from './components/BookingSummary.tsx';
 
 
 //import components and functions to set up Routing
@@ -97,6 +98,15 @@ const router = createBrowserRouter([
       {
         path: `/places/:placeId`,
         element: <PlaceDetails></PlaceDetails>
+      },
+
+      {
+        path: '/places/:placeId/reserve',
+        element: (
+          <ProtectedRoute>
+            <BookingSummary></BookingSummary>
+          </ProtectedRoute>
+        )
       }
     ]
   }

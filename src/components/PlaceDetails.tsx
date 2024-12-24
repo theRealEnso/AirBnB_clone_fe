@@ -14,6 +14,7 @@ import { selectPlace } from "../redux/places/places-selector";
 import { PhotoViewer } from "./PhotoViewer";
 import { BookingWidget } from "./BookingWidget";
 import { ExtraInformation } from "./ExtraInformation";
+import { ServiceAnimalNotice } from "./ServiceAnimalNotice";
 
 //import query function from api to get details about a specific place
 import { useGetPlaceDetailsQuery } from "../api/api-slice";
@@ -30,16 +31,13 @@ export const PlaceDetails = () => {
     const currentPlace = useSelector(selectPlace);
     const dispatch = useDispatch();
     const {placeId} = useParams();
-    console.log(placeId);
+    // console.log(placeId);
 
     const [showPhotos, setShowPhotos] = useState<boolean>(false);
     const [showMore, setShowMore] = useState<boolean>(false);
     const [displayGuestsMenu, setDisplayGuestsMenu] = useState<boolean>(false);
-    const [numberOfAdults, setNumberOfAdults] = useState<number>(1);
-    const [numberOfChildren, setNumberOfChildren] = useState<number>(0);
-    const [numberOfInfants, setNumberOfInfants] = useState<number>(0);
-    const [numberOfPets, setNumberOfPets] = useState<number>(0);
     const [isSticky, setIsSticky] = useState(false);
+    const [showServiceAnimal, setShowServiceAnimal] = useState<boolean>(false);
 
     const {data: placeDetails, isLoading, isSuccess} = useGetPlaceDetailsQuery(placeId);
 
@@ -74,7 +72,7 @@ export const PlaceDetails = () => {
             if (imagesRef.current && bookingWidgetRef.current) {
                 const imagesTop = imagesRef.current.getBoundingClientRect().top;
                 // When the images block is scrolled past, make the BookingWidget sticky
-                console.log('imagesTop:', imagesTop); // Debugging line
+                // console.log('imagesTop:', imagesTop); // Debugging line
                 setIsSticky(imagesTop <= -410);
             }
         };
@@ -84,7 +82,7 @@ export const PlaceDetails = () => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
     
-    console.log(isSticky);
+    // console.log(isSticky);
     return (
         <>
             {
@@ -165,7 +163,7 @@ export const PlaceDetails = () => {
                                         </div>
                                         {/* extra info / house rules, etc */}
                                         <div className="mt-4 border-y-2 relative">
-                                            <h1 className="font-bold text-2xl mt-4">Extra information</h1>
+                                            <h1 className="font-bold text-2xl my-4">Extra information</h1>
                                             <p style={{whiteSpace: 'pre-wrap'}}>{truncateString(extraInfo, 500)}</p>
                                             <div className="mt-4 flex items-center gap-2 cursor-pointer" onClick={() => setShowMore(true)}>
                                                 <button className="font-bold tracking-wide underline">Show more</button>
@@ -189,7 +187,7 @@ export const PlaceDetails = () => {
                                                             </div>
                                                         </div>
                                                     )
-                                                }
+                                            }
                                         </div>
                                     </div>
 
@@ -199,19 +197,31 @@ export const PlaceDetails = () => {
                                             price={price} 
                                             displayGuestsMenu={displayGuestsMenu}
                                             setDisplayGuestsMenu={setDisplayGuestsMenu}
-                                            numberOfAdults={numberOfAdults}
-                                            setNumberOfAdults={setNumberOfAdults}
-                                            numberOfChildren={numberOfChildren}
-                                            setNumberOfChildren={setNumberOfChildren}
-                                            numberOfInfants={numberOfInfants}
-                                            setNumberOfInfants={setNumberOfInfants}
-                                            numberOfPets={numberOfPets}
-                                            setNumberOfPets={setNumberOfPets}
                                             maxGuests={maxGuests}
                                             guestsMenuRef={guestsMenuRef}
+                                            setShowServiceAnimal={setShowServiceAnimal}
                                             >
                                         </BookingWidget>
                                     </div>
+
+                                    {
+                                        showServiceAnimal && 
+                                            (
+                                                // top div creates the dark overlay
+                                                <div
+                                                    className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 transition-opacity duration-300"
+                                                    onClick={() => setShowServiceAnimal(false)} // to close the overlay when clicked
+                                                    >
+                                                    {/* inner div creates the modal / white area to display the full text */}
+                                                    <div
+                                                        className="bg-white p-8 rounded-lg max-w-[500px] w-[90%] max-h-[80vh] overflow-y-auto transition-transform transform animate-slide-up"
+                                                        onClick={(e) => e.stopPropagation()} // to prevent event bubbling up when user clicks inside this div, which executes the setShowServiceAnimal(false) from executing, which closes the overlay right away
+                                                        >
+                                                        <ServiceAnimalNotice setShowServiceAnimal={setShowServiceAnimal} />
+                                                    </div>
+                                                </div>
+                                            )
+                                    }
                                 </div>
                             </div>
                         )

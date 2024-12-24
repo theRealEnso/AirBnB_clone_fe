@@ -1,4 +1,15 @@
-import { MouseEvent } from 'react';
+import { Dayjs} from 'dayjs';
+
+import { useState, useEffect, MouseEvent } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
+
+//import redux selectors
+import { selectNumberOfAdults, selectNumberOfChildren, selectNumberOfInfants, selectNumberOfPets } from '../redux/bookings/booking-selector';
+
+//import redux actions
+import { setCheckInDate, setCheckOutDate, setTotal } from '../redux/bookings/booking-reducer';
+
 
 // import components
 import { GuestsMenu } from './GuestsMenu';
@@ -6,55 +17,79 @@ import { GuestsMenu } from './GuestsMenu';
 //material UI component
 import BasicDatePicker from './BasicDatePicker';
 
-export type BookingWidgetProps = {
+type BookingWidgetProps = {
     price: number;
     displayGuestsMenu: boolean;
-    setDisplayGuestsMenu: React.Dispatch<React.SetStateAction<boolean>>
-    numberOfAdults: number;
-    setNumberOfAdults: React.Dispatch<React.SetStateAction<number>>
-    numberOfChildren: number;
-    setNumberOfChildren: React.Dispatch<React.SetStateAction<number>>
-    numberOfInfants: number;
-    setNumberOfInfants: React.Dispatch<React.SetStateAction<number>>
-    numberOfPets: number;
-    setNumberOfPets: React.Dispatch<React.SetStateAction<number>>
+    setDisplayGuestsMenu: React.Dispatch<React.SetStateAction<boolean>>;
     maxGuests: string | number;
-    guestsMenuRef: React.RefObject<HTMLDivElement | null>
+    guestsMenuRef: React.RefObject<HTMLDivElement | null>;
+    setShowServiceAnimal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const BookingWidget = ({
     price,
     displayGuestsMenu,
     setDisplayGuestsMenu,
-    numberOfAdults,
-    setNumberOfAdults,
-    numberOfChildren,
-    setNumberOfChildren,
-    numberOfInfants,
-    setNumberOfInfants,
-    numberOfPets,
-    setNumberOfPets,
     maxGuests,
     guestsMenuRef,
+    setShowServiceAnimal,
 } : BookingWidgetProps) => {
+    const {placeId} = useParams();
+
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    const numberOfAdults = useSelector(selectNumberOfAdults);
+    const numberOfChildren = useSelector(selectNumberOfChildren);
+    const numberOfInfants = useSelector(selectNumberOfInfants);
+    const numberOfPets = useSelector(selectNumberOfPets);
+
+    const [checkIn, setCheckIn] = useState<Dayjs | null>(null);
+    const [checkOut, setCheckOut] = useState<Dayjs | null>(null);
+    const [stayDuration, setStayDuration] = useState<number>(0);
+    const [bookingTotal, setBookingTotal] = useState<number>(0);
+    const [navigationError, setNavigationError] = useState<string>("");
 
     const toggleGuestMenu = (event: MouseEvent<HTMLButtonElement>) => {
         event.stopPropagation();
         setDisplayGuestsMenu(!displayGuestsMenu);
+    };
+
+    const navigateToBookingSummary = () => {
+        if(checkIn && checkOut){
+            navigate(`/places/${placeId}/reserve`);
+        } else {
+            setNavigationError("Please select valid check in and out dates")
+        }
     }
+
+    useEffect(() => {
+        if(checkIn && checkOut){
+            setStayDuration(checkOut.diff(checkIn, "day"));
+            setBookingTotal(stayDuration * price);
+            dispatch(setCheckInDate(checkIn.format("MM/DD/YYYY")));
+            dispatch(setCheckOutDate(checkOut.format("MM/DD/YYYY")));
+            dispatch(setTotal(bookingTotal))
+        }
+    },[checkIn, checkOut, stayDuration, price, bookingTotal, dispatch]);
+
+    // console.log(checkOut?.diff(checkIn, "day"));
   return (
     <div className="bg-white shadow-md p-4 rounded-2xl flex flex-col max-h-[300px]">
         <div className="text-center mb-2">
-            Price: ${price} / night
+            {
+                checkIn && checkOut ? `Price: $${bookingTotal} total` : `Price: $${price} / night`
+            }
+            
         </div>
 
         <div className="flex flex-col mb-2">
             <div className="flex">
                 <div>
-                    <BasicDatePicker label="Check in"></BasicDatePicker>
+                    <BasicDatePicker label="Check in" value={checkIn} onChange={setCheckIn}></BasicDatePicker>
                 </div>
                 <div>
-                    <BasicDatePicker label="Check out"></BasicDatePicker>
+                    <BasicDatePicker label="Check out" value={checkOut} onChange={setCheckOut}></BasicDatePicker>
                 </div>
             </div>
 
@@ -103,18 +138,11 @@ export const BookingWidget = ({
                 {
                     displayGuestsMenu && 
                     (
-                        <GuestsMenu 
-                            numberOfAdults={numberOfAdults}
-                            setNumberOfAdults={setNumberOfAdults} 
-                            numberOfChildren={numberOfChildren}
-                            setNumberOfChildren={setNumberOfChildren}
-                            numberOfInfants={numberOfInfants}
-                            setNumberOfInfants={setNumberOfInfants}  
-                            numberOfPets={numberOfPets}
-                            setNumberOfPets={setNumberOfPets}
+                        <GuestsMenu
                             maxGuests={maxGuests}
                             setDisplayGuestsMenu={setDisplayGuestsMenu}
                             guestsMenuRef={guestsMenuRef}
+                            setShowServiceAnimal={setShowServiceAnimal}
                             > 
                         </GuestsMenu>
                     )
@@ -122,9 +150,15 @@ export const BookingWidget = ({
             </div>
         </div>
 
-        <button className="bg-primary rounded-lg text-white p-2 mt-2">Book place</button>
+        <button className="bg-primary rounded-lg text-white font-semibold p-2 mt-2 tracking-wide" onClick={navigateToBookingSummary}>Reserve</button>
 
-        <div className="text-center mt-4">You won't be charged yet</div>
+        <div className="text-center mt-4 flex flex-col">
+            You won't be charged yet
+
+            {
+                navigationError && <span className="text-red-500">{navigationError}</span>
+            }
+        </div>
     </div>
   );
 };

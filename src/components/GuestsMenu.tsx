@@ -1,75 +1,76 @@
+import { useDispatch, useSelector } from "react-redux";
+
+//import redux selectors;
+import { selectNumberOfAdults, selectNumberOfChildren, selectNumberOfInfants, selectNumberOfPets, } from "../redux/bookings/booking-selector";
+
+//import redux actions;
+import { setNumberOfAdults, setNumberOfChildren, setNumberOfInfants, setNumberOfPets, } from "../redux/bookings/booking-reducer";
+
 type GuestsMenuProps = {
     setDisplayGuestsMenu: React.Dispatch<React.SetStateAction<boolean>>;
-    numberOfAdults: number;
-    setNumberOfAdults: React.Dispatch<React.SetStateAction<number>>;
-    numberOfChildren: number;
-    setNumberOfChildren: React.Dispatch<React.SetStateAction<number>>;
-    numberOfInfants: number;
-    setNumberOfInfants: React.Dispatch<React.SetStateAction<number>>;
-    numberOfPets: number;
-    setNumberOfPets: React.Dispatch<React.SetStateAction<number>>;
     maxGuests: string | number;
     guestsMenuRef: React.RefObject<HTMLDivElement | null>;
-}
+    setShowServiceAnimal: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
 export const GuestsMenu = ({
-    numberOfAdults, 
-    setNumberOfAdults, 
-    numberOfChildren, 
-    setNumberOfChildren, 
-    numberOfInfants, 
-    setNumberOfInfants, 
-    numberOfPets, 
-    setNumberOfPets,
     maxGuests,
     setDisplayGuestsMenu,
     guestsMenuRef,
+    setShowServiceAnimal,
 }: GuestsMenuProps) => {
+        const dispatch = useDispatch();
+        const numberOfAdults = useSelector(selectNumberOfAdults);
+        const numberOfChildren = useSelector(selectNumberOfChildren);
+        const numberOfInfants = useSelector(selectNumberOfInfants);
+        const numberOfPets = useSelector(selectNumberOfPets);
 
         const incrementAdults = () => {
-            setNumberOfAdults(numberOfAdults + 1);
+            dispatch(setNumberOfAdults(numberOfAdults + 1));
         };
 
         const decrementAdults = () => {
             if(numberOfAdults > 0){
-                setNumberOfAdults(numberOfAdults - 1);
+                dispatch(setNumberOfAdults(numberOfAdults - 1));
             }
         };
         const incrementChildren = () => {
-            setNumberOfChildren(numberOfChildren + 1);
+            dispatch(setNumberOfChildren(numberOfChildren + 1));
         };
 
         const decrementChildren = () => {
             if(numberOfChildren > 0){
-                setNumberOfChildren(numberOfChildren - 1);
+                dispatch(setNumberOfChildren(numberOfChildren - 1));
             }
         };
         const incrementInfants = () => {
-            setNumberOfInfants(numberOfInfants + 1);
+            dispatch(setNumberOfInfants(numberOfInfants + 1));
         };
 
         const decrementInfants = () => {
             if(numberOfInfants > 0){
-                setNumberOfInfants(numberOfInfants - 1);
+                dispatch(setNumberOfInfants(numberOfInfants - 1));
             }
         };
         const incrementPets = () => {
-            setNumberOfPets(numberOfPets + 1);
+            dispatch(setNumberOfPets(numberOfPets + 1));
         };
 
         const decrementPets = () => {
             if(numberOfPets > 0){
-                setNumberOfPets(numberOfPets - 1);
+                dispatch(setNumberOfPets(numberOfPets - 1));
             }
         };
 
         const closeGuestsMenu = () => {
             setDisplayGuestsMenu(false);
-        }
+        };
 
         const buttonStyles = `flex items-center justify-center border rounded-full w-7 h-7 text-lg text-center`;
         const activeButtonStyles = `text-gray-500 border-gray-500 hover:text-black hover:border-black cursor-pointer`;
         const disabledButtonStyles = `text-gray-200 border-gray-200 cursor-not-allowed`;
+
+        console.log(numberOfAdults);
 
     return (
         <div className="absolute bg-white w-full p-4 rounded-lg shadow-md space-y-4" ref={guestsMenuRef}>
@@ -136,7 +137,7 @@ export const GuestsMenu = ({
             <div className="flex justify-between">
                 <div className="flex flex-col">
                     <span className="font-medium">Pets</span>
-                    <span className="text-sm font-extrabold underline cursor-pointer">Bringing a service animal?</span>
+                    <span className="text-sm font-extrabold underline cursor-pointer" onClick={() => setShowServiceAnimal(true)}>Bringing a service animal?</span>
                 </div>
                 <div className="flex items-center justify-center gap-2">
                     <button 
