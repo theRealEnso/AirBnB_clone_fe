@@ -8,7 +8,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { selectNumberOfAdults, selectNumberOfChildren, selectNumberOfInfants, selectNumberOfPets } from '../redux/bookings/booking-selector';
 
 //import redux actions
-import { setCheckInDate, setCheckOutDate, setTotal } from '../redux/bookings/booking-reducer';
+import { setCheckInDate, setCheckOutDate, setTotal, setTotalDays } from '../redux/bookings/booking-reducer';
 
 
 // import components
@@ -69,7 +69,8 @@ export const BookingWidget = ({
             setBookingTotal(stayDuration * price);
             dispatch(setCheckInDate(checkIn.format("MM/DD/YYYY")));
             dispatch(setCheckOutDate(checkOut.format("MM/DD/YYYY")));
-            dispatch(setTotal(bookingTotal))
+            dispatch(setTotal(bookingTotal));
+            dispatch(setTotalDays(stayDuration));
         }
     },[checkIn, checkOut, stayDuration, price, bookingTotal, dispatch]);
 

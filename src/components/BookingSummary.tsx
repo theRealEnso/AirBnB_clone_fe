@@ -18,7 +18,7 @@ export const BookingSummary = () => {
 
     const [showServiceAnimal, setShowServiceAnimal] = useState<boolean>(false);
   return (
-    <div className="mx-24">
+    <div className="mx-24 px-16">
         <div className="flex items-center gap-4">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />

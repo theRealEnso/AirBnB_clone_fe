@@ -16,6 +16,7 @@ type BookingProps = {
         checkOutDate: string;
         price: number;
         total: number;
+        totalDays: number;
         numberOfAdults: number;
         numberOfChildren: number;
         numberOfInfants: number;
@@ -55,6 +56,7 @@ const BOOKING_INITIAL_STATE: BookingProps = {
         checkOutDate: "",
         price: 0,
         total: 0,
+        totalDays: 0,
         numberOfAdults: 1,
         numberOfChildren: 0,
         numberOfInfants: 0,
@@ -91,9 +93,13 @@ export const bookingSlice = createSlice({
         setTotal: (state, action) => {
             state.reservation.total = action.payload;
         },
+
+        setTotalDays: (state, action) => {
+            state.reservation.totalDays = action.payload;
+        },
     }
 });
 
 export const bookingReducer = bookingSlice.reducer;
 
-export const {setNumberOfAdults, setNumberOfChildren, setNumberOfInfants, setNumberOfPets, setCheckInDate, setCheckOutDate, setTotal} = bookingSlice.actions;
+export const {setNumberOfAdults, setNumberOfChildren, setNumberOfInfants, setNumberOfPets, setCheckInDate, setCheckOutDate, setTotal, setTotalDays} = bookingSlice.actions;

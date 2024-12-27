@@ -14,9 +14,9 @@ export const FormInput: FC<FormInputProps> = ({ label, ...otherProperties }) => 
       />
       <label
         className={`
-          ${otherProperties.value && typeof otherProperties.value === "string" && otherProperties.value.length > 0 ? "top-[-5px] left-[-5px] text-black text-sm pointer-events-auto" : ""}
+          ${otherProperties.value && typeof otherProperties.value === "string" && otherProperties.value.length > 0 ? "top-[-10px] left-[-10px] text-black text-sm pointer-events-auto" : ""}
           absolute text-gray-400 font-bold tracking-wide absolute left-[20px] top-[15px] pointer-events-none transition-all
-          peer-focus:top-[-10px] peer-focus:left-[-3px] peer-focus:text-black peer-focus:text-sm
+          peer-focus:top-[-10px] peer-focus:left-[-5px] peer-focus:text-black peer-focus:text-sm
         `}
       >
         {label}

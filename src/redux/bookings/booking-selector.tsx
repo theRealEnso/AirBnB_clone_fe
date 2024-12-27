@@ -12,3 +12,7 @@ export const selectNumberOfPets = (state: RootState) => state.booking.reservatio
 export const selectCheckInDate = (state: RootState) => state.booking.reservation.checkInDate;
 
 export const selectCheckOutDate = (state: RootState) => state.booking.reservation.checkOutDate;
+
+export const selectTotal = (state: RootState) => state.booking.reservation.total;
+
+export const selectTotalDays = (state: RootState) => state.booking.reservation.totalDays;
