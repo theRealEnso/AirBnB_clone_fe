@@ -12,10 +12,14 @@ import {
     selectFinalTotal
 } from "../redux/bookings/booking-selector";
 
+import { selectCurrentUser } from "../redux/user/user-selectors";
+
+import { selectPlace } from "../redux/places/places-selector";
+
 //import components
 import { SummaryViewer } from "./SummaryViewer";
 import { ServiceAnimalNotice } from "./ServiceAnimalNotice";
-import { Payment } from "./Payment";
+import { PaymentForm } from "./PaymentForm";
 
 //import components from stripe
 import { Elements } from "@stripe/react-stripe-js";
@@ -24,6 +28,7 @@ import { stripePromise } from "../main";
 import { useCreatePaymentIntentMutation } from "../api/api-slice";
 
 export const BookingSummary = () => {
+    const {firstName, lastName, email} = useSelector(selectCurrentUser);
 
     const checkInDate = useSelector(selectCheckInDate);
     const checkOutDate = useSelector(selectCheckOutDate);
@@ -32,8 +37,10 @@ export const BookingSummary = () => {
     const numberOfInfants = useSelector(selectNumberOfInfants);
     const numberOfPets = useSelector(selectNumberOfPets);
     const finalTotal = useSelector(selectFinalTotal);
+    const currentPlace = useSelector(selectPlace);
 
-    console.log(finalTotal);
+    // console.log(finalTotal);
+    console.log(currentPlace);
 
     const [showServiceAnimal, setShowServiceAnimal] = useState<boolean>(false);
     const [clientSecret, setClientSecret] = useState<string>("");
@@ -153,10 +160,9 @@ export const BookingSummary = () => {
                 {
                     clientSecret && (
                         <div className="mt-8">
-                            <h1 className="my-4 font-bold tracking-wide text-2xl">Choose how to pay</h1>
                             {/* ok to reinitialize the elements provider and pass client secret as options locally in the component even though it already wraps the entire app in main.tsx file */}
                             <Elements stripe={stripePromise} options={{clientSecret}}>
-                                <Payment></Payment>
+                                <PaymentForm firstName={firstName} lastName={lastName} email={email}></PaymentForm>
                             </Elements>
                             
                         </div>

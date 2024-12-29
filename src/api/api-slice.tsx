@@ -127,6 +127,13 @@ export const bookingsApiSlice = createApi({
             })
         }),
 
+        createBooking: builder.mutation({
+            query: (data) => ({
+                url: "/confirm-booking",
+                method: "POST",
+                body: data,
+            })
+        })
     })
 });
 
@@ -142,4 +149,4 @@ export const {
     useFetchPlacesQuery
 } = placesApiSlice;
 
-export const {useCreatePaymentIntentMutation} = bookingsApiSlice;
+export const {useCreatePaymentIntentMutation, useCreateBookingMutation} = bookingsApiSlice;

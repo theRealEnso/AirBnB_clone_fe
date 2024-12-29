@@ -15,19 +15,20 @@ type ExtendedPersistConfig = PersistConfig<RootState> & {
     whitelist: (keyof RootState)[]
 };
 
-//saveUserOnlyFilter + persistConfig--
-//goal is to persist the user so that the user state is not lost when a user refreshes the page or closes the browser
+//saveUserOnlyFilter + saveCurrentPlaceFilter + persistConfig--
+//goal is to persist the user and the place so that the user + place state is not lost when a user refreshes the page or closes the browser
 //createFilter takes 2 arguments: 1.) `reducerKey`, which is the key of the reducer to be filtered and 2.) `whitelist`, which is an array of keys within the specified reducer to be included in the filtered state
-//the filter will only be applied to the slice of the Redux state corresponding to the `user` reducer, and only the "user" key inside of the user reducer is persisted
+//the filter will only be applied to the slice of the Redux state corresponding to the `user` reducer, and only the "user" key inside of the user reducer is persisted. Likewise, the filter will be applied to the slice of the Redux state corresponding to the "places" reducer, and only the `place` key inside of the "places" reducer will be persisted
 //filter restricts state persistence and retrieval to only the "user" key within the 'user' reducer slice, enabling more focused and efficient state management.
 const saveUserOnlyFilter = createFilter("user", ["user"]);
+const saveCurrentPlaceFilter = createFilter("places", ["place"]);
 
 //define configuration object specifying how to persist the state
 const persistConfig: ExtendedPersistConfig = {
-    key: "user",
+    key: "app",
     storage,
-    whitelist: ["user"],
-    transforms: [saveUserOnlyFilter],
+    whitelist: ["user", "places", "booking"],
+    transforms: [saveUserOnlyFilter, saveCurrentPlaceFilter],
 };
 
 //wrap the reducer for persistence. Creates version of the reducer that knows how to persist and rehydrate the state

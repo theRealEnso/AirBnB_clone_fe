@@ -58,7 +58,7 @@ export const SummaryViewer = () => {
                 <div className="flex flex-col mt-4 space-y-2">
                   <div className="flex justify-between">
                     <p className="font-semibold">Total <span className="underline">(USD)</span></p>
-                    <p>{`${finalTotal}`}</p>
+                    <p>{`$${finalTotal}`}</p>
                   </div>
                   <div className="flex justify-end cursor-pointer">
                     <p className="underline font-bold">Price breakdown</p>
