@@ -1,13 +1,10 @@
 import { useState, ChangeEvent, FormEvent} from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 
 //import components
 import { FormInput } from "./FormInput";
 import { RiseLoader } from "react-spinners";
-
-//import redux selector
-import { selectCurrentUser } from "../../redux/user/user-selectors";
 
 //import redux action
 import { setUser } from "../../redux/user/user-reducer";
@@ -21,7 +18,6 @@ import { getErrorMessage } from "../../utils";
 const LoginForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const currentUser = useSelector(selectCurrentUser);
 
   const [loginUser, {data: userData, isLoading, isSuccess, isError, error}] = useLoginUserMutation();
 

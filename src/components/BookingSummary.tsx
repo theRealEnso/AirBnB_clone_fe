@@ -28,7 +28,8 @@ import { stripePromise } from "../main";
 import { useCreatePaymentIntentMutation } from "../api/api-slice";
 
 export const BookingSummary = () => {
-    const {firstName, lastName, email} = useSelector(selectCurrentUser);
+    const {firstName, lastName, email, id} = useSelector(selectCurrentUser);
+    console.log(id);
 
     const checkInDate = useSelector(selectCheckInDate);
     const checkOutDate = useSelector(selectCheckOutDate);
@@ -162,7 +163,7 @@ export const BookingSummary = () => {
                         <div className="mt-8">
                             {/* ok to reinitialize the elements provider and pass client secret as options locally in the component even though it already wraps the entire app in main.tsx file */}
                             <Elements stripe={stripePromise} options={{clientSecret}}>
-                                <PaymentForm firstName={firstName} lastName={lastName} email={email}></PaymentForm>
+                                <PaymentForm firstName={firstName} lastName={lastName} email={email} id={id}></PaymentForm>
                             </Elements>
                             
                         </div>

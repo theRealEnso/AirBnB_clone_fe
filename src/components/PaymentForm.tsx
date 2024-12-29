@@ -41,10 +41,12 @@ type PaymentFormProps = {
     firstName: string,
     lastName: string,
     email: string,
+    id: string,
 };
 
 
-export const PaymentForm = ({firstName, lastName, email}: PaymentFormProps) => {
+export const PaymentForm = ({firstName, lastName, email, id}: PaymentFormProps) => {
+    console.log(id);
     const navigate = useNavigate();
     const [createBooking] = useCreateBookingMutation();
 
@@ -187,6 +189,7 @@ export const PaymentForm = ({firstName, lastName, email}: PaymentFormProps) => {
                 const bookingResponse = await createBooking({
                     place: currentPlace,
                     customerName: `${firstName} ${lastName}`,
+                    customerId: id,
                     email,
                     phoneNumber: phone,
                     billingDetails,
