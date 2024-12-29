@@ -9,7 +9,7 @@ import createFilter from "redux-persist-transform-filter";
 import { rootReducer, RootState } from "./root-reducer";
 
 //import apiSlice to update middlewares in the store
-import { userApiSlice, placesApiSlice } from "../api/api-slice";
+import { userApiSlice, placesApiSlice, bookingsApiSlice } from "../api/api-slice";
 
 type ExtendedPersistConfig = PersistConfig<RootState> & {
     whitelist: (keyof RootState)[]
@@ -35,7 +35,7 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
     reducer: persistedReducer,
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware({serializableCheck: false}).concat(userApiSlice.middleware).concat(placesApiSlice.middleware),
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware({serializableCheck: false}).concat(userApiSlice.middleware).concat(placesApiSlice.middleware).concat(bookingsApiSlice.middleware),
     devTools: true,
 });
 

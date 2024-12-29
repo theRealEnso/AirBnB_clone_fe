@@ -4,6 +4,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 const AUTH_ENDPOINT = `${import.meta.env.VITE_REACT_APP_AIRBNB_API_ENDPOINT}/auth`;
 const PLACES_ENDPOINT = `${import.meta.env.VITE_REACT_APP_AIRBNB_API_ENDPOINT}/places`;
+const BOOKINGS_ENDPOINT = `${import.meta.env.VITE_REACT_APP_AIRBNB_API_ENDPOINT}/bookings`;
 
 
 //define slice to handle functions and actions related to user authentication
@@ -103,7 +104,34 @@ export const placesApiSlice = createApi({
     })
 });
 
+//define slice to handle functions and actions related to bookings
+export const bookingsApiSlice = createApi({
+    reducerPath: "bookingsApi",
+    baseQuery: fetchBaseQuery({ 
+        baseUrl: `${BOOKINGS_ENDPOINT}`,
+        prepareHeaders: (headers, {getState}) => { //destucture the getState function from RTK api
+            const token = (getState() as RootState).user?.user?.access_token;
+            if(token){
+                headers.set("Authorization", `Bearer ${token}`);
+            };
+
+            return headers;
+        }
+    }),
+    endpoints: (builder) => ({
+        createPaymentIntent: builder.mutation({
+            query: (data) => ({
+                url: "/create-payment-intent",
+                method: "POST",
+                body: data,
+            })
+        }),
+
+    })
+});
+
 export const { useRegisterUserMutation, useLoginUserMutation } = userApiSlice;
+
 export const {
     useUploadPhotoFromLinkMutation, 
     useUploadPhotoFromDeviceMutation, 
@@ -113,3 +141,5 @@ export const {
     useUpdatePlaceMutation,
     useFetchPlacesQuery
 } = placesApiSlice;
+
+export const {useCreatePaymentIntentMutation} = bookingsApiSlice;

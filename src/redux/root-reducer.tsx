@@ -1,7 +1,7 @@
 import { combineReducers } from "@reduxjs/toolkit";
 
 //import apiSlice
-import { userApiSlice, placesApiSlice } from "../api/api-slice";
+import { userApiSlice, placesApiSlice, bookingsApiSlice } from "../api/api-slice";
 
 //import existing reducers to be combined
 import { userReducer } from "./user/user-reducer";
@@ -14,6 +14,7 @@ export const rootReducer = combineReducers({
     booking: bookingReducer,
     [userApiSlice.reducerPath]: userApiSlice.reducer,
     [placesApiSlice.reducerPath]: placesApiSlice.reducer,
+    [bookingsApiSlice.reducerPath] : bookingsApiSlice.reducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

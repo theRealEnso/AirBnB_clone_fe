@@ -1,3 +1,5 @@
+import './index.css';
+
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
@@ -6,8 +8,12 @@ import { Provider } from 'react-redux';
 import { store, persistor } from './redux/store.tsx';
 import { PersistGate } from 'redux-persist/integration/react';
 
+//import stripe components
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
 
-import './index.css';
+//import components and functions to set up Routing
+import { createBrowserRouter, RouterProvider,} from 'react-router-dom';
 
 //import components
 import { ProtectedRoute } from './api/ProtectedRoute.tsx';
@@ -23,9 +29,10 @@ import { PlacesPage } from './components/pages/PlacesPage.tsx';
 import { PlaceDetails } from './components/PlaceDetails.tsx';
 import { BookingSummary } from './components/BookingSummary.tsx';
 
+//environment variables
+const stripe_publishable_key = import.meta.env.VITE_REACT_APP_STRIPE_PUBLISHABLE_KEY;
 
-//import components and functions to set up Routing
-import { createBrowserRouter, RouterProvider,} from 'react-router-dom';
+export const stripePromise = loadStripe(stripe_publishable_key);
 
 
 const router = createBrowserRouter([
@@ -116,7 +123,9 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Provider store={store}>
       <PersistGate persistor={persistor}>
-        <RouterProvider router={router}></RouterProvider>
+        <Elements stripe={stripePromise}>
+          <RouterProvider router={router}></RouterProvider>
+        </Elements>
       </PersistGate>
     </Provider>
   </StrictMode>,

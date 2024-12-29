@@ -1,22 +1,65 @@
-import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useState, useEffect } from "react";
+import { useSelector, } from "react-redux";
 
 //import redux selectors
-import { selectCheckInDate, selectCheckOutDate, selectNumberOfAdults, selectNumberOfChildren, selectNumberOfInfants, selectNumberOfPets, } from "../redux/bookings/booking-selector";
+import { 
+    selectCheckInDate, 
+    selectCheckOutDate, 
+    selectNumberOfAdults, 
+    selectNumberOfChildren, 
+    selectNumberOfInfants, 
+    selectNumberOfPets,
+    selectFinalTotal
+} from "../redux/bookings/booking-selector";
 
 //import components
 import { SummaryViewer } from "./SummaryViewer";
 import { ServiceAnimalNotice } from "./ServiceAnimalNotice";
+import { Payment } from "./Payment";
+
+//import components from stripe
+import { Elements } from "@stripe/react-stripe-js";
+import { stripePromise } from "../main";
+
+import { useCreatePaymentIntentMutation } from "../api/api-slice";
 
 export const BookingSummary = () => {
+
     const checkInDate = useSelector(selectCheckInDate);
     const checkOutDate = useSelector(selectCheckOutDate);
     const numberOfAdults = useSelector(selectNumberOfAdults);
     const numberOfChildren = useSelector(selectNumberOfChildren);
     const numberOfInfants = useSelector(selectNumberOfInfants);
     const numberOfPets = useSelector(selectNumberOfPets);
+    const finalTotal = useSelector(selectFinalTotal);
+
+    console.log(finalTotal);
 
     const [showServiceAnimal, setShowServiceAnimal] = useState<boolean>(false);
+    const [clientSecret, setClientSecret] = useState<string>("");
+
+    const [createPaymentIntent] = useCreatePaymentIntentMutation();
+
+    useEffect(() => {
+        const fetchClientSecret = async () => {
+            if(finalTotal){
+                const response = await createPaymentIntent({
+                    amount: finalTotal,
+                    currency: "usd",
+                });
+
+                if(response){
+                    // console.log(response);
+                    const {data: {client_secret}} = response;
+                    // console.log(client_secret);
+                    setClientSecret(client_secret);
+                }
+            }
+        }
+
+        fetchClientSecret();
+    },[createPaymentIntent, finalTotal]);
+
   return (
     <div className="mx-24 px-16">
         <div className="flex items-center gap-4">
@@ -69,14 +112,14 @@ export const BookingSummary = () => {
                                     </div>
 
                                     {
-                                        numberOfPets && (
+                                        numberOfPets ? (
                                             <p 
                                                 className="text-sm font-bold underline cursor-pointer" 
                                                 onClick={() => setShowServiceAnimal(true)}
                                                 >
                                                     Bringing a service animal?
                                             </p>
-                                        )
+                                        ) : null
                                     }
 
                                     {
@@ -105,6 +148,21 @@ export const BookingSummary = () => {
                         </div>
                     </div>
                 </div>
+
+                {/* payment component */}
+                {
+                    clientSecret && (
+                        <div className="mt-8">
+                            <h1 className="my-4 font-bold tracking-wide text-2xl">Choose how to pay</h1>
+                            {/* ok to reinitialize the elements provider and pass client secret as options locally in the component even though it already wraps the entire app in main.tsx file */}
+                            <Elements stripe={stripePromise} options={{clientSecret}}>
+                                <Payment></Payment>
+                            </Elements>
+                            
+                        </div>
+                    )
+                }
+
             </div>
 
             {/* right side */}

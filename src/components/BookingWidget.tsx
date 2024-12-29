@@ -8,7 +8,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { selectNumberOfAdults, selectNumberOfChildren, selectNumberOfInfants, selectNumberOfPets } from '../redux/bookings/booking-selector';
 
 //import redux actions
-import { setCheckInDate, setCheckOutDate, setTotal, setTotalDays } from '../redux/bookings/booking-reducer';
+import { setCheckInDate, setCheckOutDate, setSubTotal, setFinalTotal, setTotalDays } from '../redux/bookings/booking-reducer';
 
 
 // import components
@@ -47,8 +47,12 @@ export const BookingWidget = ({
     const [checkIn, setCheckIn] = useState<Dayjs | null>(null);
     const [checkOut, setCheckOut] = useState<Dayjs | null>(null);
     const [stayDuration, setStayDuration] = useState<number>(0);
-    const [bookingTotal, setBookingTotal] = useState<number>(0);
+    const [bookingSubTotal, setBookingSubTotal] = useState<number>(0);
     const [navigationError, setNavigationError] = useState<string>("");
+
+    const serviceFee = .125;
+    const taxes = .10;
+    const finalCharge = bookingSubTotal + (bookingSubTotal * taxes) + (bookingSubTotal * serviceFee);
 
     const toggleGuestMenu = (event: MouseEvent<HTMLButtonElement>) => {
         event.stopPropagation();
@@ -62,24 +66,24 @@ export const BookingWidget = ({
             setNavigationError("Please select valid check in and out dates")
         }
     }
-
     useEffect(() => {
         if(checkIn && checkOut){
             setStayDuration(checkOut.diff(checkIn, "day"));
-            setBookingTotal(stayDuration * price);
+            setBookingSubTotal(stayDuration * price);
             dispatch(setCheckInDate(checkIn.format("MM/DD/YYYY")));
             dispatch(setCheckOutDate(checkOut.format("MM/DD/YYYY")));
-            dispatch(setTotal(bookingTotal));
+            dispatch(setSubTotal(bookingSubTotal));
             dispatch(setTotalDays(stayDuration));
+            dispatch(setFinalTotal(finalCharge))
         }
-    },[checkIn, checkOut, stayDuration, price, bookingTotal, dispatch]);
+    },[checkIn, checkOut, stayDuration, price, bookingSubTotal, finalCharge, dispatch]);
 
     // console.log(checkOut?.diff(checkIn, "day"));
   return (
     <div className="bg-white shadow-md p-4 rounded-2xl flex flex-col max-h-[300px]">
         <div className="text-center mb-2">
             {
-                checkIn && checkOut ? `Price: $${bookingTotal} total` : `Price: $${price} / night`
+                checkIn && checkOut ? `Price: $${bookingSubTotal} total` : `Price: $${price} / night`
             }
             
         </div>
