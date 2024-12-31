@@ -133,6 +133,13 @@ export const bookingsApiSlice = createApi({
                 method: "POST",
                 body: data,
             })
+        }),
+
+        getMyBookings: builder.query({
+            query: (userId) => ({
+                url: `/my-bookings/${userId}`,
+                method: "GET",
+            })
         })
     })
 });
@@ -149,4 +156,4 @@ export const {
     useFetchPlacesQuery
 } = placesApiSlice;
 
-export const {useCreatePaymentIntentMutation, useCreateBookingMutation} = bookingsApiSlice;
+export const {useCreatePaymentIntentMutation, useCreateBookingMutation, useGetMyBookingsQuery} = bookingsApiSlice;

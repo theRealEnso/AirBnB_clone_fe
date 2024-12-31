@@ -1,5 +1,5 @@
 import { useState, FormEvent } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 //import redux selectors
@@ -14,6 +14,9 @@ import {
     selectNumberOfInfants, 
     selectNumberOfPets, 
 } from "../redux/bookings/booking-selector";
+
+//import redux actions
+import { setNumberOfAdults, setNumberOfChildren, setNumberOfInfants, setNumberOfPets } from "../redux/bookings/booking-reducer";
 
 //import components from Stripe
 import { useStripe, useElements, PaymentElement, AddressElement} from "@stripe/react-stripe-js";
@@ -47,6 +50,7 @@ type PaymentFormProps = {
 
 export const PaymentForm = ({firstName, lastName, email, id}: PaymentFormProps) => {
     console.log(id);
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const [createBooking] = useCreateBookingMutation();
 
@@ -103,33 +107,12 @@ export const PaymentForm = ({firstName, lastName, email, id}: PaymentFormProps) 
 
     };
 
-    // const addressElement = elements?.getElement(AddressElement);
-    // // console.log(addressElement);
-    // addressElement?.getValue()
-    // .then((result) => {
-    //     if(result.complete){
-    //         setAddressData(result.value)
-    //     }
-    // });
-
-    // const setBillingDetails = async () => {
-    //     if(elements){
-    //         const addressElement = elements.getElement(AddressElement);
-    //         if(addressElement){
-    //             const addressData = await addressElement.getValue();
-    //             if (!addressData.complete) {
-    //                 setErrorMessage("Please complete all address fields.");
-    //                 return;
-    //             }
-        
-    //             setAddressData(addressData.value);
-    //         }
-            
-    //     }
-    // }
-
-    // console.log(addressData);
-
+    const resetGuests = async () => {
+        dispatch(setNumberOfAdults(1));
+        dispatch(setNumberOfChildren(0));
+        dispatch(setNumberOfInfants(0));
+        dispatch(setNumberOfPets(0));
+    }
 
     const handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
@@ -205,6 +188,7 @@ export const PaymentForm = ({firstName, lastName, email, id}: PaymentFormProps) 
 
                 if(bookingResponse){
                     console.log(bookingResponse);
+                    await resetGuests();
                     navigate("/account/bookings");
                 } else {
                     console.error(bookingResponse.error)

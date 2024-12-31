@@ -11,18 +11,24 @@ type BookingProps = {
             lastName: string;
             id: string;
         },
-        phoneNumber: string;
-        checkInDate: string;
-        checkOutDate: string;
-        price: number;
-        subTotal: number;
-        finalTotal: number;
-        totalDays: number;
-        numberOfAdults: number;
-        numberOfChildren: number;
-        numberOfInfants: number;
-        numberOfPets: number;
-    }
+
+        bookingDetails: {
+            phoneNumber: string;
+            checkInDate: string;
+            checkOutDate: string;
+            price: number;
+            subTotal: number;
+            finalTotal: number;
+            totalDays: number;
+            numberOfAdults: number;
+            numberOfChildren: number;
+            numberOfInfants: number;
+            numberOfPets: number;
+        }
+
+    },
+
+    existingBookings: [],
 
 }
 
@@ -52,19 +58,23 @@ const BOOKING_INITIAL_STATE: BookingProps = {
             lastName: "",
             id: "",
         },
-        phoneNumber: "",
-        checkInDate: "",
-        checkOutDate: "",
-        price: 0,
-        subTotal: 0,
-        finalTotal: 0,
-        totalDays: 0,
-        numberOfAdults: 1,
-        numberOfChildren: 0,
-        numberOfInfants: 0,
-        numberOfPets: 0,
 
-    }
+        bookingDetails: {
+            phoneNumber: "",
+            checkInDate: "",
+            checkOutDate: "",
+            price: 0,
+            subTotal: 0,
+            finalTotal: 0,
+            totalDays: 0,
+            numberOfAdults: 1,
+            numberOfChildren: 0,
+            numberOfInfants: 0,
+            numberOfPets: 0,
+        }
+    },
+
+    existingBookings: [],
 };
 
 export const bookingSlice = createSlice({
@@ -72,40 +82,44 @@ export const bookingSlice = createSlice({
     initialState: BOOKING_INITIAL_STATE,
     reducers: {
         setNumberOfAdults: (state, action) => {
-            state.reservation.numberOfAdults = action.payload;
+            state.reservation.bookingDetails.numberOfAdults = action.payload;
         },
         setNumberOfChildren: (state, action) => {
-            state.reservation.numberOfChildren = action.payload;
+            state.reservation.bookingDetails.numberOfChildren = action.payload;
         },
         setNumberOfInfants: (state, action) => {
-            state.reservation.numberOfInfants = action.payload;
+            state.reservation.bookingDetails.numberOfInfants = action.payload;
         },
         setNumberOfPets: (state, action) => {
-            state.reservation.numberOfPets = action.payload;
+            state.reservation.bookingDetails.numberOfPets = action.payload;
         },
 
         setCheckInDate: (state, action) => {
-            state.reservation.checkInDate = action.payload;
+            state.reservation.bookingDetails.checkInDate = action.payload;
         },
 
         setCheckOutDate: (state, action) => {
-            state.reservation.checkOutDate = action.payload;
+            state.reservation.bookingDetails.checkOutDate = action.payload;
         },
 
         setSubTotal: (state, action) => {
-            state.reservation.subTotal = action.payload;
+            state.reservation.bookingDetails.subTotal = action.payload;
         },
 
         setFinalTotal: (state, action) => {
-            state.reservation.finalTotal = action.payload;
+            state.reservation.bookingDetails.finalTotal = action.payload;
         },
 
         setTotalDays: (state, action) => {
-            state.reservation.totalDays = action.payload;
+            state.reservation.bookingDetails.totalDays = action.payload;
         },
+
+        setExistingBookings: (state, action) => {
+            state.existingBookings = action.payload;
+        }
     }
 });
 
 export const bookingReducer = bookingSlice.reducer;
 
-export const {setNumberOfAdults, setNumberOfChildren, setNumberOfInfants, setNumberOfPets, setCheckInDate, setCheckOutDate, setSubTotal, setFinalTotal, setTotalDays} = bookingSlice.actions;
+export const {setNumberOfAdults, setNumberOfChildren, setNumberOfInfants, setNumberOfPets, setCheckInDate, setCheckOutDate, setSubTotal, setFinalTotal, setTotalDays, setExistingBookings} = bookingSlice.actions;
