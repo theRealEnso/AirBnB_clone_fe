@@ -5,6 +5,8 @@ import { PlaceCard } from './components/PlaceCard';
 
 import { useFetchPlacesQuery } from './api/api-slice';
 
+import { Place } from './redux/places/places-reducer';
+
 function App() {
 
   const {data: places, isLoading, isSuccess, isError, error} = useFetchPlacesQuery();
@@ -13,7 +15,7 @@ function App() {
     <div className="min-h-screen mx-24">
       <div className="gap-6 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
         {
-          places && places.map((place) => {
+          places && places.map((place: Place) => {
             return (
               <PlaceCard place={place} key={place._id}></PlaceCard>
             )

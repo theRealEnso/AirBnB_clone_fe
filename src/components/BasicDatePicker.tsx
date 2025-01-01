@@ -5,7 +5,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 type DatePickerProps = {
   label: string;
   value: Dayjs | null;
-  onChange: React.Dispatch<React.SetStateAction<Dayjs | null>>;
+  onChange: (value: Dayjs | null) => void;
 }
 
 // https://mui.com/x/react-date-pickers/lifecycle/#lifecycle-on-simple-fields

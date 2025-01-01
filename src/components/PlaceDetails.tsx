@@ -35,7 +35,6 @@ export const PlaceDetails = () => {
 
     const [showPhotos, setShowPhotos] = useState<boolean>(false);
     const [showMore, setShowMore] = useState<boolean>(false);
-    const [displayGuestsMenu, setDisplayGuestsMenu] = useState<boolean>(false);
     const [isSticky, setIsSticky] = useState(false);
     const [showServiceAnimal, setShowServiceAnimal] = useState<boolean>(false);
 
@@ -52,19 +51,6 @@ export const PlaceDetails = () => {
             dispatch(setPlace(placeDetails));
         }
     }, [dispatch, placeDetails, isSuccess]);
-
-    //useEffect to handle closing the menu dropdown in the booking widget when user clicks anywhere outside of it
-    useEffect(() => {
-        const handleOutsideClick = (event) => {
-            if(guestsMenuRef.current && !guestsMenuRef.current.contains(event.target)){
-                setDisplayGuestsMenu(false);
-            }
-        }
-        document.body.addEventListener("click", handleOutsideClick);
-
-        return () => document.body.removeEventListener("click", handleOutsideClick);
-
-    },[setDisplayGuestsMenu]);
 
     //to handle sticky
     useEffect(() => {
@@ -195,8 +181,6 @@ export const PlaceDetails = () => {
                                     <div className={`${isSticky ? "sticky z-10" : ""}`} ref={bookingWidgetRef}>
                                         <BookingWidget
                                             price={price} 
-                                            displayGuestsMenu={displayGuestsMenu}
-                                            setDisplayGuestsMenu={setDisplayGuestsMenu}
                                             maxGuests={maxGuests}
                                             guestsMenuRef={guestsMenuRef}
                                             setShowServiceAnimal={setShowServiceAnimal}
@@ -207,7 +191,9 @@ export const PlaceDetails = () => {
                                     {
                                         showServiceAnimal && 
                                             (
-                                                // top div creates the dark overlay
+                                                // top div creates the dark overlay. 
+                                                // inset-0 = top: 0; right: 0; bottom: 0; left: 0. This ensures the overlay stretches to cover the entire viewport
+                                                // position fixed ensures the overlay remains fixed during scrolling
                                                 <div
                                                     className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 transition-opacity duration-300"
                                                     onClick={() => setShowServiceAnimal(false)} // to close the overlay when clicked

@@ -14,11 +14,14 @@ import {
 
 import { selectCurrentUser } from "../redux/user/user-selectors";
 
-import { selectPlace } from "../redux/places/places-selector";
+import { selectPlace, selectMaxGuests } from "../redux/places/places-selector";
 
 //import components
 import { SummaryViewer } from "./SummaryViewer";
 import { ServiceAnimalNotice } from "./ServiceAnimalNotice";
+import { DateSelector } from "./DateSelector";
+import { GuestsDisplayCount } from "./GuestsDisplayCount";
+import { GuestsMenu } from "./GuestsMenu";
 import { PaymentForm } from "./PaymentForm";
 
 //import components from stripe
@@ -31,6 +34,11 @@ export const BookingSummary = () => {
     const {firstName, lastName, email, id} = useSelector(selectCurrentUser);
     console.log(id);
 
+    const [showEditDates, setShowEditDates] = useState<boolean>(false);
+    const [displayGuestsMenu, setDisplayGuestsMenu] = useState<boolean>(false);
+    const [showServiceAnimal, setShowServiceAnimal] = useState<boolean>(false);
+    const [clientSecret, setClientSecret] = useState<string>("");
+
     const checkInDate = useSelector(selectCheckInDate);
     const checkOutDate = useSelector(selectCheckOutDate);
     const numberOfAdults = useSelector(selectNumberOfAdults);
@@ -39,12 +47,10 @@ export const BookingSummary = () => {
     const numberOfPets = useSelector(selectNumberOfPets);
     const finalTotal = useSelector(selectFinalTotal);
     const currentPlace = useSelector(selectPlace);
+    const maxGuests = useSelector(selectMaxGuests);
 
     // console.log(finalTotal);
     console.log(currentPlace);
-
-    const [showServiceAnimal, setShowServiceAnimal] = useState<boolean>(false);
-    const [clientSecret, setClientSecret] = useState<string>("");
 
     const [createPaymentIntent] = useCreatePaymentIntentMutation();
 
@@ -89,7 +95,28 @@ export const BookingSummary = () => {
                                 <p className="text-sm">{`${checkInDate} - ${checkOutDate}`}</p>
                             </div>
 
-                            <span className="underline font-semibold cursor-pointer">Edit</span>
+                            <span className="underline font-semibold cursor-pointer" onClick={() => setShowEditDates(true)}>Edit</span>
+
+                            {
+                                showEditDates && 
+                                    (
+                                        // top div creates the dark overlay. 
+                                        // inset-0 = top: 0; right: 0; bottom: 0; left: 0. This ensures the overlay stretches to cover the entire viewport
+                                        // position fixed ensures the overlay remains fixed during scrolling
+                                        <div
+                                            className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 transition-opacity duration-300"
+                                            onClick={() => setShowEditDates(false)} // to close the overlay when clicked
+                                            >
+                                            {/* inner div creates the modal / white area to display the full text */}
+                                            <div
+                                                className="bg-white p-8 rounded-lg max-w-[500px] w-[90%] max-h-[80vh] overflow-y-auto transition-transform transform animate-slide-up"
+                                                onClick={(e) => e.stopPropagation()} // to prevent event bubbling up when user clicks inside this div, which executes the setShowEditDates(false) from executing, which closes the overlay right away
+                                                >
+                                                <DateSelector setShowEditDates={setShowEditDates} />
+                                            </div>
+                                        </div>
+                                    )
+                                    }
                         </div>
                         <div className="flex justify-between">
                             <div className="mt-4 space-y-2">
@@ -113,7 +140,7 @@ export const BookingSummary = () => {
                                         <p className="text-sm">
                                             {
                                                 numberOfPets === 1 ? `, 1 pet`
-                                                : numberOfPets > 1 ? `${numberOfPets} pets`
+                                                : numberOfPets > 1 ? `, ${numberOfPets} pets`
                                                 : null
                                             }
                                         </p>
@@ -152,7 +179,39 @@ export const BookingSummary = () => {
                                 
                             </div>
 
-                            <span className="underline font-semibold cursor-pointer">Edit</span>
+                            <span className="underline font-semibold cursor-pointer" onClick={() => setDisplayGuestsMenu(true)}>Edit</span>
+                            {
+                               displayGuestsMenu && 
+                                    (
+                                        <div 
+                                            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center transition-opacity duration-300 z-50" 
+                                            onClick={() => setDisplayGuestsMenu(false)}
+                                            >
+                                            <div 
+                                                className="bg-white rounded-lg animate-slide-up p-8 max-w-[500px] w-[90%] max-h-[80vh] transition-transform transform"
+                                                onClick={(event) => event.stopPropagation()}
+                                                >
+                                                
+                                                    <GuestsDisplayCount 
+                                                        numberOfAdults={numberOfAdults}
+                                                        numberOfChildren={numberOfChildren}
+                                                        numberOfInfants={numberOfInfants}
+                                                        numberOfPets={numberOfPets}
+                                                        >
+                                                    </GuestsDisplayCount>
+
+                                                    <GuestsMenu 
+                                                        maxGuests={maxGuests}
+                                                        setDisplayGuestsMenu={setDisplayGuestsMenu} 
+                                                        setShowServiceAnimal={setShowServiceAnimal}
+                                                        >
+                                                    </GuestsMenu>
+
+
+                                            </div>
+                                        </div>
+                                    ) 
+                            }
                         </div>
                     </div>
                 </div>

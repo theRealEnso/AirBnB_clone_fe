@@ -16,7 +16,14 @@ import {
 } from "../redux/bookings/booking-selector";
 
 //import redux actions
-import { setNumberOfAdults, setNumberOfChildren, setNumberOfInfants, setNumberOfPets } from "../redux/bookings/booking-reducer";
+import { 
+    setNumberOfAdults, 
+    setNumberOfChildren, 
+    setNumberOfInfants, 
+    setNumberOfPets, 
+    setCheckInDate, 
+    setCheckOutDate 
+} from "../redux/bookings/booking-reducer";
 
 //import components from Stripe
 import { useStripe, useElements, PaymentElement, AddressElement} from "@stripe/react-stripe-js";
@@ -107,11 +114,13 @@ export const PaymentForm = ({firstName, lastName, email, id}: PaymentFormProps) 
 
     };
 
-    const resetGuests = async () => {
+    const clearFields = async () => {
         dispatch(setNumberOfAdults(1));
         dispatch(setNumberOfChildren(0));
         dispatch(setNumberOfInfants(0));
         dispatch(setNumberOfPets(0));
+        dispatch(setCheckInDate(""));
+        dispatch(setCheckOutDate(""));
     }
 
     const handleSubmit = async (event: FormEvent) => {
@@ -188,7 +197,7 @@ export const PaymentForm = ({firstName, lastName, email, id}: PaymentFormProps) 
 
                 if(bookingResponse){
                     console.log(bookingResponse);
-                    await resetGuests();
+                    await clearFields();
                     navigate("/account/bookings");
                 } else {
                     console.error(bookingResponse.error)

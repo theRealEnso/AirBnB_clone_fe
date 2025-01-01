@@ -3,8 +3,13 @@ import { useNavigate } from "react-router-dom";
 
 // import redux action(s)
 import { logout } from "../../redux/user/user-reducer";
+import { setNumberOfAdults, setNumberOfChildren, setNumberOfInfants, setNumberOfPets, setCheckInDate, setCheckOutDate } from "../../redux/bookings/booking-reducer";
 
-const ProfileWidget = ({showProfileWidget, profileWidgetRef}) => {
+type ProfileWidgetRefProps = {
+    profileWidgetRef: React.RefObject<HTMLDivElement | null | undefined>
+}
+
+const ProfileWidget = ({profileWidgetRef}: ProfileWidgetRefProps) => {
     const dispatch = useDispatch();
 
     const navigate = useNavigate();
@@ -22,11 +27,15 @@ const ProfileWidget = ({showProfileWidget, profileWidgetRef}) => {
     }
 
     const signOut = () => {
+        dispatch(setNumberOfAdults(1));
+        dispatch(setNumberOfChildren(0));
+        dispatch(setNumberOfInfants(0));
+        dispatch(setNumberOfPets(0));
+        dispatch(setCheckInDate(""));
+        dispatch(setCheckOutDate(""));
         dispatch(logout());
         navigate("/");
     }
-
-    // ${showProfileWidget ? "opacity-100 pointer-events-auto -translate-x-32 translate-y-2 transition-all" : "opacity-0 pointer-events-none -translate-x-32 -translate-y-10"}
 
     return (
         <div

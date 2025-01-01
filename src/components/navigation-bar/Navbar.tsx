@@ -1,15 +1,27 @@
 
 import { useState, useEffect, useRef, MouseEvent,} from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 //import redux selector
 import { selectCurrentUser, } from "../../redux/user/user-selectors";
 
+//import redux actions
+import { 
+    setNumberOfAdults,
+    setNumberOfChildren,
+    setNumberOfInfants,
+    setNumberOfPets,
+    setCheckInDate,
+    setCheckOutDate,
+
+} from "../../redux/bookings/booking-reducer";
+
 // import components
 import ProfileWidget from "./ProfileWidget";
 
 const Navbar = () => {
+    const dispatch = useDispatch(); 
     const navigate = useNavigate();
     const currentUser = useSelector(selectCurrentUser);
     const {access_token} = currentUser;
@@ -28,7 +40,17 @@ const Navbar = () => {
         // console.log(showProfileWidget);
     };
 
-    const returnToHome = () => {
+    const clearFields = async () => {
+        dispatch(setNumberOfAdults(1));
+        dispatch(setNumberOfChildren(0));
+        dispatch(setNumberOfInfants(0));
+        dispatch(setNumberOfPets(0));
+        dispatch(setCheckInDate(""));
+        dispatch(setCheckOutDate(""));
+    }
+
+    const returnToHome = async () => {
+        await clearFields();
         navigate("/");
     };
 

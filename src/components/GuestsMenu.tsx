@@ -7,9 +7,9 @@ import { selectNumberOfAdults, selectNumberOfChildren, selectNumberOfInfants, se
 import { setNumberOfAdults, setNumberOfChildren, setNumberOfInfants, setNumberOfPets, } from "../redux/bookings/booking-reducer";
 
 type GuestsMenuProps = {
-    setDisplayGuestsMenu: React.Dispatch<React.SetStateAction<boolean>>;
     maxGuests: string | number;
-    guestsMenuRef: React.RefObject<HTMLDivElement | null>;
+    setDisplayGuestsMenu: React.Dispatch<React.SetStateAction<boolean>>;
+    guestsMenuRef?: React.RefObject<HTMLDivElement | null>;
     setShowServiceAnimal: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
@@ -73,7 +73,7 @@ export const GuestsMenu = ({
         console.log(numberOfAdults);
 
     return (
-        <div className="absolute bg-white w-full p-4 rounded-lg shadow-md space-y-4" ref={guestsMenuRef}>
+        <div className={`bg-white w-full p-4 rounded-lg shadow-md space-y-4`} ref={guestsMenuRef}>
             {/* adults */}
             <div className="flex justify-between">
                 <div className="flex flex-col">

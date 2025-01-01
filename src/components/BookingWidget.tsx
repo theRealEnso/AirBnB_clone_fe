@@ -1,17 +1,18 @@
-import { Dayjs} from 'dayjs';
+import dayjs, { Dayjs} from 'dayjs';
 
 import { useState, useEffect, MouseEvent } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 
 //import redux selectors
-import { selectNumberOfAdults, selectNumberOfChildren, selectNumberOfInfants, selectNumberOfPets } from '../redux/bookings/booking-selector';
+import { selectCheckInDate, selectCheckOutDate, selectNumberOfAdults, selectNumberOfChildren, selectNumberOfInfants, selectNumberOfPets } from '../redux/bookings/booking-selector';
 
 //import redux actions
 import { setCheckInDate, setCheckOutDate, setSubTotal, setFinalTotal, setTotalDays } from '../redux/bookings/booking-reducer';
 
 
 // import components
+import { GuestsDisplayCount } from './GuestsDisplayCount';
 import { GuestsMenu } from './GuestsMenu';
 
 //material UI component
@@ -19,8 +20,6 @@ import BasicDatePicker from './BasicDatePicker';
 
 type BookingWidgetProps = {
     price: number;
-    displayGuestsMenu: boolean;
-    setDisplayGuestsMenu: React.Dispatch<React.SetStateAction<boolean>>;
     maxGuests: string | number;
     guestsMenuRef: React.RefObject<HTMLDivElement | null>;
     setShowServiceAnimal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -28,8 +27,6 @@ type BookingWidgetProps = {
 
 export const BookingWidget = ({
     price,
-    displayGuestsMenu,
-    setDisplayGuestsMenu,
     maxGuests,
     guestsMenuRef,
     setShowServiceAnimal,
@@ -43,7 +40,10 @@ export const BookingWidget = ({
     const numberOfChildren = useSelector(selectNumberOfChildren);
     const numberOfInfants = useSelector(selectNumberOfInfants);
     const numberOfPets = useSelector(selectNumberOfPets);
+    const checkInDate = useSelector(selectCheckInDate);
+    const checkOutDate = useSelector(selectCheckOutDate);
 
+    const [displayGuestsMenu, setDisplayGuestsMenu] = useState<boolean>(false);
     const [checkIn, setCheckIn] = useState<Dayjs | null>(null);
     const [checkOut, setCheckOut] = useState<Dayjs | null>(null);
     const [stayDuration, setStayDuration] = useState<number>(0);
@@ -60,7 +60,7 @@ export const BookingWidget = ({
     };
 
     const navigateToBookingSummary = () => {
-        if(checkIn && checkOut){
+        if((checkIn && checkOut) || (checkInDate && checkOutDate)){
             navigate(`/places/${placeId}/reserve`);
         } else {
             setNavigationError("Please select valid check in and out dates")
@@ -78,6 +78,19 @@ export const BookingWidget = ({
         }
     },[checkIn, checkOut, stayDuration, price, bookingSubTotal, finalCharge, dispatch]);
 
+    //useEffect to handle closing the menu dropdown in the booking widget when user clicks anywhere outside of it
+    useEffect(() => {
+        const handleOutsideClick = (event) => {
+            if(guestsMenuRef.current && !guestsMenuRef.current.contains(event.target)){
+                setDisplayGuestsMenu(false);
+            }
+        }
+        document.body.addEventListener("click", handleOutsideClick);
+
+        return () => document.body.removeEventListener("click", handleOutsideClick);
+
+    },[setDisplayGuestsMenu, guestsMenuRef]);
+
     // console.log(checkOut?.diff(checkIn, "day"));
   return (
     <div className="bg-white shadow-md p-4 rounded-2xl flex flex-col max-h-[300px]">
@@ -91,65 +104,37 @@ export const BookingWidget = ({
         <div className="flex flex-col mb-2">
             <div className="flex">
                 <div>
-                    <BasicDatePicker label="Check in" value={checkIn} onChange={setCheckIn}></BasicDatePicker>
+                    <BasicDatePicker label="Check in" value={checkInDate ? dayjs(checkInDate) : checkIn} onChange={setCheckIn}></BasicDatePicker>
                 </div>
                 <div>
-                    <BasicDatePicker label="Check out" value={checkOut} onChange={setCheckOut}></BasicDatePicker>
+                    <BasicDatePicker label="Check out" value={checkOutDate ? dayjs(checkOutDate) : checkOut} onChange={setCheckOut}></BasicDatePicker>
                 </div>
             </div>
 
             <div className="relative">
-                <button className="border-2 p-4 w-full text-left flex justify-between" onClick={toggleGuestMenu}>
-                    <div className="flex">
-                        <span> 
-                            {
-                                
-                                numberOfAdults + numberOfChildren === 1 ? `1 guest`
-                                : numberOfAdults + numberOfChildren > 1 ? `${numberOfAdults + numberOfChildren} guests`
-                                : null
-                            }
-                        </span>
-                        <span>
-                            {
-                                numberOfInfants === 1 ? `, 1 infant`
-                                : numberOfInfants > 1 ? `, ${numberOfInfants} infants`
-                                : null
-                            }
-                        </span>
-                        <span>
-                            {
-                                numberOfPets === 1 ? `, 1 pet`
-                                : numberOfPets > 1 ? `, ${numberOfPets} pets`
-                                : null
-                            }
-                        </span>
-                    </div>
-                    
-
-                    {
-                        displayGuestsMenu ? (
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
-                            </svg>   
-                        ) : (
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                            </svg>
-                        )
-                    }                                                 
-
-                </button>
-
+                <GuestsDisplayCount 
+                    numberOfAdults={numberOfAdults}
+                    numberOfChildren={numberOfChildren}
+                    numberOfInfants={numberOfInfants}
+                    numberOfPets={numberOfPets}
+                    displayGuestsMenu={displayGuestsMenu}
+                    toggleGuestMenu={toggleGuestMenu}
+                >
+                </GuestsDisplayCount>
                 {
                     displayGuestsMenu && 
                     (
-                        <GuestsMenu
-                            maxGuests={maxGuests}
-                            setDisplayGuestsMenu={setDisplayGuestsMenu}
-                            guestsMenuRef={guestsMenuRef}
-                            setShowServiceAnimal={setShowServiceAnimal}
-                            > 
-                        </GuestsMenu>
+                        <div className="absolute">
+                            <GuestsMenu
+                                displayGuestsMenu={displayGuestsMenu}
+                                maxGuests={maxGuests}
+                                setDisplayGuestsMenu={setDisplayGuestsMenu}
+                                guestsMenuRef={guestsMenuRef}
+                                setShowServiceAnimal={setShowServiceAnimal}
+                                > 
+                            </GuestsMenu>
+                        </div>
+
                     )
                 }
             </div>
