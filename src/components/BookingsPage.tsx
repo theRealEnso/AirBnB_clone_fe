@@ -31,7 +31,7 @@ export const BookingsPage = () => {
   return (
     <>
       <AccountNavigation></AccountNavigation>
-      <div className="mx-24 px-28 grid md:grid-cols-2 gap-y-8">
+      <div className="mx-24 px-28 grid md:grid-cols-1 lg:grid-cols-2 gap-8">
         {
           myBookings && myBookings.map((booking) => {
             return <BookingCard booking={booking} key={booking._id}></BookingCard>

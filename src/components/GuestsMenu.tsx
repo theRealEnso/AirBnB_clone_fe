@@ -70,7 +70,7 @@ export const GuestsMenu = ({
         const activeButtonStyles = `text-gray-500 border-gray-500 hover:text-black hover:border-black cursor-pointer`;
         const disabledButtonStyles = `text-gray-200 border-gray-200 cursor-not-allowed`;
 
-        console.log(numberOfAdults);
+        // console.log(numberOfAdults);
 
     return (
         <div className={`bg-white w-full p-4 rounded-lg shadow-md space-y-4`} ref={guestsMenuRef}>

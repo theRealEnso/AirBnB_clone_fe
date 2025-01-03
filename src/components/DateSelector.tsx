@@ -9,14 +9,17 @@ import { selectCheckInDate, selectCheckOutDate } from '../redux/bookings/booking
 import { setCheckInDate, setCheckOutDate } from '../redux/bookings/booking-reducer';
 
 //import components
-import BasicDatePicker from './BasicDatePicker'
+import BasicDatePicker from './DatePickers/BasicDatePicker'
 
 //import material UI component
 import CloseIcon from '@mui/icons-material/Close';
+import React from 'react';
 
+type SetShowEditDatesProps = {
+    setShowEditDates: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
-
-export const DateSelector = ({setShowEditDates}) => {
+export const DateSelector = ({setShowEditDates}: SetShowEditDatesProps) => {
     const dispatch = useDispatch();
 
     const checkInDate = useSelector(selectCheckInDate);

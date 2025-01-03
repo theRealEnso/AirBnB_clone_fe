@@ -15,12 +15,13 @@ import { setCheckInDate, setCheckOutDate, setSubTotal, setFinalTotal, setTotalDa
 import { GuestsDisplayCount } from './GuestsDisplayCount';
 import { GuestsMenu } from './GuestsMenu';
 
-//material UI component
-import BasicDatePicker from './BasicDatePicker';
+//material UI date component
+import BasicDatePicker from './DatePickers/BasicDatePicker';
 
 type BookingWidgetProps = {
     price: number;
     maxGuests: string | number;
+    reservedDates: Dayjs[];
     guestsMenuRef: React.RefObject<HTMLDivElement | null>;
     setShowServiceAnimal: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -28,6 +29,7 @@ type BookingWidgetProps = {
 export const BookingWidget = ({
     price,
     maxGuests,
+    reservedDates,
     guestsMenuRef,
     setShowServiceAnimal,
 } : BookingWidgetProps) => {
@@ -92,22 +94,25 @@ export const BookingWidget = ({
     },[setDisplayGuestsMenu, guestsMenuRef]);
 
     // console.log(checkOut?.diff(checkIn, "day"));
+
   return (
-    <div className="bg-white shadow-md p-4 rounded-2xl flex flex-col max-h-[300px]">
+    <div className="bg-white shadow-md p-4 rounded-2xl flex flex-col max-h-[320px]">
         <div className="text-center mb-2">
             {
                 checkIn && checkOut ? `Price: $${bookingSubTotal} total` : `Price: $${price} / night`
             }
             
         </div>
-
-        <div className="flex flex-col mb-2">
+        
+        
+        <div className="flex flex-col mb-2 w-full">
+            {/* date inputs */}
             <div className="flex">
-                <div>
-                    <BasicDatePicker label="Check in" value={checkInDate ? dayjs(checkInDate) : checkIn} onChange={setCheckIn}></BasicDatePicker>
+                <div className="w-[50%]">
+                    <BasicDatePicker label="Check in" value={checkInDate ? dayjs(checkInDate) : checkIn} onChange={setCheckIn} reservedDates={reservedDates}></BasicDatePicker>
                 </div>
-                <div>
-                    <BasicDatePicker label="Check out" value={checkOutDate ? dayjs(checkOutDate) : checkOut} onChange={setCheckOut}></BasicDatePicker>
+                <div className="w-[50%]">
+                    <BasicDatePicker label="Check out" value={checkOutDate ? dayjs(checkOutDate) : checkOut} onChange={setCheckOut} reservedDates={reservedDates}></BasicDatePicker>
                 </div>
             </div>
 
@@ -126,7 +131,6 @@ export const BookingWidget = ({
                     (
                         <div className="absolute">
                             <GuestsMenu
-                                displayGuestsMenu={displayGuestsMenu}
                                 maxGuests={maxGuests}
                                 setDisplayGuestsMenu={setDisplayGuestsMenu}
                                 guestsMenuRef={guestsMenuRef}

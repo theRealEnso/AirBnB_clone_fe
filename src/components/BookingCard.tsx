@@ -18,8 +18,8 @@ export const BookingCard = ({booking}) => {
     const formattedDate = dayjs(booking.createdAt).format("MM/DD/YYYY");
 
   return (
-    <div className={`mt-4 rounded-2xl shadow-xl ${addGlowEffectStyles} ${animateBorderColorStyles} max-w-[700px]`}>
-        <Link to={`/account/places/${place._id}`} className="flex items-center bg-gray-200 p-6 rounded-2xl gap-8 h-full">
+    <div className={`mt-4 rounded-2xl shadow-xl ${addGlowEffectStyles} ${animateBorderColorStyles} w-full flex-none`}>
+        <Link to={`/account/places/${place._id}`} className="flex items-center bg-gray-200 p-6 rounded-2xl gap-8 h-full w-full flex-none">
             {
                 booking.place.photos && booking.place.photos.length > 0 && 
                 (

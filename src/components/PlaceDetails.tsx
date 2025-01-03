@@ -16,8 +16,10 @@ import { BookingWidget } from "./BookingWidget";
 import { ExtraInformation } from "./ExtraInformation";
 import { ServiceAnimalNotice } from "./ServiceAnimalNotice";
 
+import dayjs, { Dayjs } from "dayjs";
+
 //import query function from api to get details about a specific place
-import { useGetPlaceDetailsQuery } from "../api/api-slice";
+import { useGetPlaceDetailsQuery, useGetReservedDatesQuery } from "../api/api-slice";
 
 //import utility function
 import { truncateString } from "../utils";
@@ -33,14 +35,18 @@ export const PlaceDetails = () => {
     const {placeId} = useParams();
     // console.log(placeId);
 
+
+    const {data: placeDetails, isLoading, isSuccess} = useGetPlaceDetailsQuery(placeId);
+    // console.log(placeDetails);
+
+    const {data: reservedDatesArray} = useGetReservedDatesQuery(placeId);
+    console.log(reservedDatesArray);
+
+    const [reservedDates, setReservedDates] = useState<Dayjs[]>([]);
     const [showPhotos, setShowPhotos] = useState<boolean>(false);
     const [showMore, setShowMore] = useState<boolean>(false);
     const [isSticky, setIsSticky] = useState(false);
     const [showServiceAnimal, setShowServiceAnimal] = useState<boolean>(false);
-
-    const {data: placeDetails, isLoading, isSuccess} = useGetPlaceDetailsQuery(placeId);
-
-    // console.log(placeDetails);
 
     const guestsMenuRef = useRef<HTMLDivElement | null>(null);
     const imagesRef = useRef<HTMLDivElement | null>(null);
@@ -51,6 +57,17 @@ export const PlaceDetails = () => {
             dispatch(setPlace(placeDetails));
         }
     }, [dispatch, placeDetails, isSuccess]);
+
+    useEffect(() => {
+        if(reservedDatesArray){
+            const formattedDatesArray = reservedDatesArray.map((date) => {
+                return dayjs(date);
+            });
+
+            setReservedDates(formattedDatesArray);
+        }
+
+    }, [reservedDatesArray])
 
     //to handle sticky
     useEffect(() => {
@@ -182,6 +199,7 @@ export const PlaceDetails = () => {
                                         <BookingWidget
                                             price={price} 
                                             maxGuests={maxGuests}
+                                            reservedDates={reservedDates}
                                             guestsMenuRef={guestsMenuRef}
                                             setShowServiceAnimal={setShowServiceAnimal}
                                             >
