@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
-import { useSelector, } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 import { useParams } from "react-router-dom";
+
+//import redux actions
+import { setNumberOfAdults, setNumberOfChildren, setNumberOfInfants, setNumberOfPets, setCheckInDate, setCheckOutDate, setPrice, setFinalTotal, setTotalDays, } from "../redux/bookings/booking-reducer";
 
 //import redux selectors
 import { 
@@ -30,25 +33,43 @@ import { PaymentForm } from "./PaymentForm";
 import { Elements } from "@stripe/react-stripe-js";
 import { stripePromise } from "../main";
 
-import { useCreatePaymentIntentMutation, useGetPlaceDetailsQuery, useGetReservedDatesQuery} from "../api/api-slice";
+import { useCreatePaymentIntentMutation, useGetBookingDetailsQuery, useGetReservedDatesQuery } from "../api/api-slice";
 
-export const BookingSummary = () => {
-    const {placeId} = useParams();
+export const EditReservationForm = () => {
+    const dispatch = useDispatch();
+    const {bookingId} = useParams();
 
-    const {data: placeDetails} = useGetPlaceDetailsQuery(placeId);
-    console.log(placeDetails);
+    const [showEditDates, setShowEditDates] = useState<boolean>(false);
+    const [displayGuestsMenu, setDisplayGuestsMenu] = useState<boolean>(false);
+    const [showServiceAnimal, setShowServiceAnimal] = useState<boolean>(false);
+    const [clientSecret, setClientSecret] = useState<string>("");
+    const [placeId, setPlaceId] = useState<string>("");
+
+    const {data: bookingDetails} = useGetBookingDetailsQuery(bookingId);
+    console.log(bookingDetails);
+
+    useEffect(() => {
+        if(bookingDetails){
+            setPlaceId(bookingDetails.place._id);
+            dispatch(setNumberOfAdults(bookingDetails.numberOfAdults));
+            dispatch(setNumberOfChildren(bookingDetails.numberOfChildren));
+            dispatch(setNumberOfInfants(bookingDetails.numberOfInfants));
+            dispatch(setNumberOfPets(bookingDetails.numberOfPets));
+            dispatch(setCheckInDate(bookingDetails.checkInDate));
+            dispatch(setCheckOutDate(bookingDetails.checkOutDate));
+            dispatch(setPrice(bookingDetails.place.price));
+            dispatch(setFinalTotal(bookingDetails.finalTotal));
+        }
+    }, [bookingDetails, dispatch])
 
     const {data: reservedDates} = useGetReservedDatesQuery(placeId);
 
     const {firstName, lastName, email, id} = useSelector(selectCurrentUser);
     console.log(id);
 
-    const [showEditDates, setShowEditDates] = useState<boolean>(false);
-    const [displayGuestsMenu, setDisplayGuestsMenu] = useState<boolean>(false);
-    const [showServiceAnimal, setShowServiceAnimal] = useState<boolean>(false);
-    const [clientSecret, setClientSecret] = useState<string>("");
-   
 
+    // console.log(finalTotal);
+ 
     const checkInDate = useSelector(selectCheckInDate);
     const checkOutDate = useSelector(selectCheckOutDate);
     const numberOfAdults = useSelector(selectNumberOfAdults);
@@ -57,9 +78,6 @@ export const BookingSummary = () => {
     const numberOfPets = useSelector(selectNumberOfPets);
     const finalTotal = useSelector(selectFinalTotal);
     const maxGuests = useSelector(selectMaxGuests);
-
-    // console.log(finalTotal);
- 
 
     const [createPaymentIntent] = useCreatePaymentIntentMutation();
 
@@ -125,7 +143,7 @@ export const BookingSummary = () => {
                                             </div>
                                         </div>
                                     )
-                                    }
+                                }
                         </div>
                         <div className="flex justify-between">
                             <div className="mt-4 space-y-2">
@@ -242,9 +260,9 @@ export const BookingSummary = () => {
 
             {/* right side. Conditioanlly render the summary viewer only if place detail data from the query is available */}
             {
-                placeDetails && (
+                bookingDetails && (
                     <div>
-                        <SummaryViewer placeDetails={placeDetails}></SummaryViewer>
+                        <SummaryViewer bookingDetails={bookingDetails}></SummaryViewer>
                     </div>
                 )
             }

@@ -13,6 +13,8 @@ export const selectCheckInDate = (state: RootState) => state.booking.reservation
 
 export const selectCheckOutDate = (state: RootState) => state.booking.reservation.bookingDetails.checkOutDate;
 
+export const selectPrice = (state: RootState) => state.booking.reservation.bookingDetails.price;
+
 export const selectSubTotal = (state: RootState) => state.booking.reservation.bookingDetails.subTotal;
 
 export const selectFinalTotal = (state: RootState) => state.booking.reservation.bookingDetails.finalTotal;

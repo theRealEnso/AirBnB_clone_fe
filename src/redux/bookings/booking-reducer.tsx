@@ -102,6 +102,10 @@ export const bookingSlice = createSlice({
             state.reservation.bookingDetails.checkOutDate = action.payload;
         },
 
+        setPrice: (state, action) => {
+            state.reservation.bookingDetails.price = action.payload;
+        },
+
         setSubTotal: (state, action) => {
             state.reservation.bookingDetails.subTotal = action.payload;
         },
@@ -122,4 +126,4 @@ export const bookingSlice = createSlice({
 
 export const bookingReducer = bookingSlice.reducer;
 
-export const {setNumberOfAdults, setNumberOfChildren, setNumberOfInfants, setNumberOfPets, setCheckInDate, setCheckOutDate, setSubTotal, setFinalTotal, setTotalDays, setExistingBookings} = bookingSlice.actions;
+export const {setNumberOfAdults, setNumberOfChildren, setNumberOfInfants, setNumberOfPets, setCheckInDate, setCheckOutDate, setPrice, setSubTotal, setFinalTotal, setTotalDays, setExistingBookings} = bookingSlice.actions;

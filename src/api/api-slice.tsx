@@ -137,7 +137,7 @@ export const bookingsApiSlice = createApi({
 
         getMyBookings: builder.query({
             query: (userId) => ({
-                url: `/my-bookings/${userId}`,
+                url: `/user/${userId}`,
                 method: "GET",
             })
         }),
@@ -145,6 +145,13 @@ export const bookingsApiSlice = createApi({
         getReservedDates: builder.query({
             query: (placeId) => ({
                 url: `/reserved-dates/${placeId}`,
+                method: "GET",
+            })
+        }),
+
+        getBookingDetails: builder.query({
+            query: (bookingId) => ({
+                url: `/reservation/${bookingId}`,
                 method: "GET",
             })
         })
@@ -163,4 +170,4 @@ export const {
     useFetchPlacesQuery
 } = placesApiSlice;
 
-export const {useCreatePaymentIntentMutation, useCreateBookingMutation, useGetMyBookingsQuery, useGetReservedDatesQuery} = bookingsApiSlice;
+export const {useCreatePaymentIntentMutation, useCreateBookingMutation, useGetMyBookingsQuery, useGetReservedDatesQuery, useGetBookingDetailsQuery} = bookingsApiSlice;

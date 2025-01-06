@@ -5,10 +5,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 
 //import redux selectors
-import { selectCheckInDate, selectCheckOutDate, selectNumberOfAdults, selectNumberOfChildren, selectNumberOfInfants, selectNumberOfPets } from '../redux/bookings/booking-selector';
+import { selectCheckInDate, selectCheckOutDate, selectNumberOfAdults, selectNumberOfChildren, selectNumberOfInfants, selectNumberOfPets, selectSubTotal } from '../redux/bookings/booking-selector';
 
 //import redux actions
-import { setCheckInDate, setCheckOutDate, setSubTotal, setFinalTotal, setTotalDays } from '../redux/bookings/booking-reducer';
+import { setCheckInDate, setCheckOutDate, setPrice, setSubTotal, setFinalTotal, setTotalDays } from '../redux/bookings/booking-reducer';
 
 
 // import components
@@ -44,12 +44,12 @@ export const BookingWidget = ({
     const numberOfPets = useSelector(selectNumberOfPets);
     const checkInDate = useSelector(selectCheckInDate);
     const checkOutDate = useSelector(selectCheckOutDate);
+    const bookingSubTotal = useSelector(selectSubTotal);
 
     const [displayGuestsMenu, setDisplayGuestsMenu] = useState<boolean>(false);
     const [checkIn, setCheckIn] = useState<Dayjs | null>(null);
     const [checkOut, setCheckOut] = useState<Dayjs | null>(null);
     const [stayDuration, setStayDuration] = useState<number>(0);
-    const [bookingSubTotal, setBookingSubTotal] = useState<number>(0);
     const [navigationError, setNavigationError] = useState<string>("");
 
     const serviceFee = .125;
@@ -62,7 +62,7 @@ export const BookingWidget = ({
     };
 
     const navigateToBookingSummary = () => {
-        if((checkIn && checkOut) || (checkInDate && checkOutDate)){
+        if((checkIn && checkOut && checkIn < checkOut) || (checkInDate && checkOutDate && checkInDate < checkOutDate)){
             navigate(`/places/${placeId}/reserve`);
         } else {
             setNavigationError("Please select valid check in and out dates")
@@ -71,7 +71,8 @@ export const BookingWidget = ({
     useEffect(() => {
         if(checkIn && checkOut){
             setStayDuration(checkOut.diff(checkIn, "day"));
-            setBookingSubTotal(stayDuration * price);
+            dispatch(setSubTotal(stayDuration * price));
+            dispatch(setPrice(price));
             dispatch(setCheckInDate(checkIn.format("MM/DD/YYYY")));
             dispatch(setCheckOutDate(checkOut.format("MM/DD/YYYY")));
             dispatch(setSubTotal(bookingSubTotal));
@@ -99,7 +100,9 @@ export const BookingWidget = ({
     <div className="bg-white shadow-md p-4 rounded-2xl flex flex-col max-h-[320px]">
         <div className="text-center mb-2">
             {
-                checkIn && checkOut ? `Price: $${bookingSubTotal} total` : `Price: $${price} / night`
+                navigationError || (checkIn && checkOut && checkIn >= checkOut) ? `Price: Invalid dates`
+                : checkIn && checkOut && checkIn < checkOut ? `Price: $${bookingSubTotal} total` 
+                : `Price: $${price} / night`
             }
             
         </div>

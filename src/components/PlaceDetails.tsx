@@ -24,7 +24,7 @@ import { useGetPlaceDetailsQuery, useGetReservedDatesQuery } from "../api/api-sl
 //import utility function
 import { truncateString } from "../utils";
 
-type PhotoProps = {
+export type PhotoProps = {
     tempId: string;
     photo: string;
 };
@@ -51,12 +51,6 @@ export const PlaceDetails = () => {
     const guestsMenuRef = useRef<HTMLDivElement | null>(null);
     const imagesRef = useRef<HTMLDivElement | null>(null);
     const bookingWidgetRef = useRef<HTMLDivElement | null>(null);
-
-    useEffect(() => {
-        if(isSuccess || placeDetails){
-            dispatch(setPlace(placeDetails));
-        }
-    }, [dispatch, placeDetails, isSuccess]);
 
     useEffect(() => {
         if(reservedDatesArray){
@@ -195,16 +189,21 @@ export const PlaceDetails = () => {
                                     </div>
 
                                     {/* booking widget component */}
-                                    <div className={`${isSticky ? "sticky z-10" : ""}`} ref={bookingWidgetRef}>
-                                        <BookingWidget
-                                            price={price} 
-                                            maxGuests={maxGuests}
-                                            reservedDates={reservedDates}
-                                            guestsMenuRef={guestsMenuRef}
-                                            setShowServiceAnimal={setShowServiceAnimal}
-                                            >
-                                        </BookingWidget>
-                                    </div>
+                                    {
+                                        reservedDates && (
+                                            <div className={`${isSticky ? "sticky z-10" : ""}`} ref={bookingWidgetRef}>
+                                                <BookingWidget
+                                                    price={price} 
+                                                    maxGuests={maxGuests}
+                                                    reservedDates={reservedDates}
+                                                    guestsMenuRef={guestsMenuRef}
+                                                    setShowServiceAnimal={setShowServiceAnimal}
+                                                    >
+                                                </BookingWidget>
+                                            </div>
+                                        )
+                                    }
+
 
                                     {
                                         showServiceAnimal && 

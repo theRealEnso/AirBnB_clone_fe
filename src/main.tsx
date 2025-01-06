@@ -28,6 +28,7 @@ import { AccomodationFormPage } from './components/pages/AccomodationFormPage.ts
 import { PlacesPage } from './components/pages/PlacesPage.tsx';
 import { PlaceDetails } from './components/PlaceDetails.tsx';
 import { BookingSummary } from './components/BookingSummary.tsx';
+import { EditReservationForm } from './components/EditReservationForm.tsx';
 
 //environment variables
 const stripe_publishable_key = import.meta.env.VITE_REACT_APP_STRIPE_PUBLISHABLE_KEY;
@@ -112,6 +113,15 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <BookingSummary></BookingSummary>
+          </ProtectedRoute>
+        )
+      },
+
+      {
+        path: `/account/bookings/:bookingId`,
+        element: (
+          <ProtectedRoute>
+            <EditReservationForm></EditReservationForm>
           </ProtectedRoute>
         )
       }

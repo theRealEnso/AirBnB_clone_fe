@@ -1,12 +1,14 @@
+import { useState, useEffect } from 'react';
+
 import { useSelector, useDispatch } from 'react-redux'
 
 import dayjs, {Dayjs} from 'dayjs';
 
 //import redux selectors
-import { selectCheckInDate, selectCheckOutDate } from '../redux/bookings/booking-selector';
+import { selectCheckInDate, selectCheckOutDate, selectPrice, selectSubTotal } from '../redux/bookings/booking-selector';
 
 //import redux actions
-import { setCheckInDate, setCheckOutDate } from '../redux/bookings/booking-reducer';
+import { setCheckInDate, setCheckOutDate, setPrice, setTotalDays, setSubTotal, setFinalTotal } from '../redux/bookings/booking-reducer';
 
 //import components
 import BasicDatePicker from './DatePickers/BasicDatePicker'
@@ -17,13 +19,23 @@ import React from 'react';
 
 type SetShowEditDatesProps = {
     setShowEditDates: React.Dispatch<React.SetStateAction<boolean>>;
+    reservedDates: Dayjs[];
 }
 
-export const DateSelector = ({setShowEditDates}: SetShowEditDatesProps) => {
+export const DateSelector = ({setShowEditDates, reservedDates}: SetShowEditDatesProps) => {
     const dispatch = useDispatch();
+
+    const bookingSubTotal = useSelector(selectSubTotal);
+
+    const serviceFee = .125;
+    const taxes = .10;
+    const finalCharge = bookingSubTotal + (bookingSubTotal * taxes) + (bookingSubTotal * serviceFee);
+
+    const [stayDuration, setStayDuration] = useState<number>(0);
 
     const checkInDate = useSelector(selectCheckInDate);
     const checkOutDate = useSelector(selectCheckOutDate);
+    const price = useSelector(selectPrice);
 
     //convert date strings back to Dayjs instances
     const convertedCheckInDate = checkInDate ? dayjs(checkInDate) : null; 
@@ -39,6 +51,17 @@ export const DateSelector = ({setShowEditDates}: SetShowEditDatesProps) => {
         dispatch(setCheckOutDate(updatedCheckOutDate?.format("MM/DD/YYYY")));
     };
 
+    useEffect(() => {
+        if(convertedCheckInDate && convertedCheckOutDate){
+            setStayDuration(convertedCheckOutDate.diff(convertedCheckInDate, "day"));
+            dispatch(setPrice(price));
+            dispatch(setSubTotal(price * stayDuration))
+            dispatch(setTotalDays(stayDuration));
+            dispatch(setFinalTotal(finalCharge))
+
+        }
+    }, [convertedCheckInDate, convertedCheckOutDate, stayDuration, price, finalCharge, dispatch]);
+
   return (
     <div className="flex flex-col">
         <div onClick={() => setShowEditDates(false)} className="cursor-pointer mb-2"> 
@@ -47,10 +70,10 @@ export const DateSelector = ({setShowEditDates}: SetShowEditDatesProps) => {
         
         <div className="flex">
             <div>
-                <BasicDatePicker label="Check in" value={convertedCheckInDate} onChange={handleCheckInDateChange}></BasicDatePicker>
+                <BasicDatePicker label="Check in" value={convertedCheckInDate} onChange={handleCheckInDateChange} reservedDates={reservedDates}></BasicDatePicker>
             </div>
             <div>
-                <BasicDatePicker label="Check out" value={convertedCheckOutDate} onChange={handleCheckOutDateChange}></BasicDatePicker>
+                <BasicDatePicker label="Check out" value={convertedCheckOutDate} onChange={handleCheckOutDateChange} reservedDates={reservedDates}></BasicDatePicker>
             </div>
         </div>
 
