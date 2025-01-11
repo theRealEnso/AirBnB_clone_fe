@@ -11,6 +11,7 @@ import {
     selectNumberOfChildren, 
     selectNumberOfInfants, 
     selectNumberOfPets,
+    selectSubTotal,
     selectFinalTotal
 } from "../redux/bookings/booking-selector";
 
@@ -55,9 +56,11 @@ export const BookingSummary = () => {
     const numberOfChildren = useSelector(selectNumberOfChildren);
     const numberOfInfants = useSelector(selectNumberOfInfants);
     const numberOfPets = useSelector(selectNumberOfPets);
+    const subTotal = useSelector(selectSubTotal);
     const finalTotal = useSelector(selectFinalTotal);
     const maxGuests = useSelector(selectMaxGuests);
 
+    console.log(subTotal);
     // console.log(finalTotal);
  
 

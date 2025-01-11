@@ -1,10 +1,12 @@
-import { useSelector, } from "react-redux";
+import { useSelector,} from "react-redux";
 
 // import redux selectors
 import { selectSubTotal, selectFinalTotal, selectTotalDays,} from "../redux/bookings/booking-selector";
 
 //import material UI icon
 import StarIcon from '@mui/icons-material/StarBorder';
+
+import { Place } from "../redux/places/places-reducer";
 
 //typescript types
 type Address = {
@@ -14,12 +16,9 @@ type Address = {
   state: string;
   postalCode: string;
   country: string;
-}
-import { Place } from "../redux/places/places-reducer";
-
-type SummaryViewerProps =
-  | {placeDetails : Place; bookingDetails?: never} //Case 1:  if `placeDetails` is present, then `bookingDetails` is not allowed
-  | {bookingDetails: {
+};
+export type BookingDetails = {
+  bookingDetails: {
     place: Place;
     _id: string;
     email: string;
@@ -38,18 +37,40 @@ type SummaryViewerProps =
     numberOfPets: number;
     createdAt: string;
     updatedAt: string;
+  };
+};
 
-  }; placeDetails?: never} // Case 2: if `bookingDetails` is present, then `placeDetails` is not allowed
+type SummaryViewerProps =
+  | {placeDetails : Place; bookingDetails?: never} //Case 1:  if `placeDetails` is present, then `bookingDetails` is not allowed
+  | {bookingDetails: BookingDetails; placeDetails?: never} // Case 2: if `bookingDetails` is present, then `placeDetails` is not allowed
 
 
 export const SummaryViewer: React.FC<SummaryViewerProps> = ({placeDetails, bookingDetails}) => {
-  console.log(placeDetails);
-
+  // console.log(placeDetails);
+  const taxes = .10;
+  
   const subTotal = useSelector(selectSubTotal);
-  const finalTotal = useSelector(selectFinalTotal)
+  const finalTotal = useSelector(selectFinalTotal);
   const totalDays = useSelector(selectTotalDays);
 
-  const taxes = .10;
+  // const displayValues = useMemo(() => {
+  //   const hasUpdates = subTotal !== 0 || finalTotal !== 0 || totalDays !== 0;
+
+  //   if(hasUpdates){
+  //     return {
+  //       subTotal,
+  //       finalTotal,
+  //       totalDays,
+  //     }
+  //   }
+
+  //   return {
+  //     subTotal: bookingDetails?.place.price * bookingDetails?.numberOfNights,
+  //     finalTotal: bookingDetails?.finalTotal,
+  //     totalDays: bookingDetails?.numberOfNights,
+  //   };
+
+  // }, [subTotal, finalTotal, totalDays, bookingDetails]);
 
   return (
     <>  
@@ -110,6 +131,13 @@ export const SummaryViewer: React.FC<SummaryViewerProps> = ({placeDetails, booki
         bookingDetails && (
           (() => {
             const {place, numberOfNights} = bookingDetails;
+
+            // if(bookingDetails){
+            //   dispatch(setSubTotal(bookingDetails.place.price * bookingDetails * bookingDetails.numberOfNights));
+            //   dispatch(setFinalTotal(bookingDetails.finalTotal));
+            //   dispatch(setTotalDays(bookingDetails.numberOfNights));
+            // }
+
             return (
               <div className="flex flex-col border rounded-2xl p-4 max-w-[400px] fixed">
                 {/* top section */}
@@ -134,13 +162,12 @@ export const SummaryViewer: React.FC<SummaryViewerProps> = ({placeDetails, booki
                   <h3 className="my-4 font-semibold tracking-wide">Your total</h3>
 
                   <div className="flex justify-between space-y-2">
-                    <p>{`${numberOfNights} nights`}</p>
-                    <p>{`$${place.price * numberOfNights}`}</p>
+                    <p>{`${totalDays} nights`}</p>
+                    <p>{`$${subTotal}`}</p>
                   </div>
-
                   <div className="flex items-center justify-between space-y-2">
                     <p>Taxes</p>
-                    <p>{`$${place.price * numberOfNights * taxes}`}</p>
+                    <p>{`$${subTotal * taxes}`}</p>
                   </div>
                 </div>
           
@@ -148,7 +175,7 @@ export const SummaryViewer: React.FC<SummaryViewerProps> = ({placeDetails, booki
                 <div className="flex flex-col mt-4 space-y-2">
                   <div className="flex justify-between">
                     <p className="font-semibold">Total <span className="underline">(USD)</span></p>
-                    <p>{`$${bookingDetails.finalTotal}`}</p>
+                    <p>{`$${finalTotal}`}</p>
                   </div>
                   <div className="flex justify-end cursor-pointer">
                     <p className="underline font-bold">Price breakdown</p>

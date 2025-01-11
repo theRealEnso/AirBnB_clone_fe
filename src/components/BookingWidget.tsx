@@ -69,15 +69,14 @@ export const BookingWidget = ({
         }
     }
     useEffect(() => {
-        if(checkIn && checkOut){
+        if(checkIn && checkOut && checkIn < checkOut){
             setStayDuration(checkOut.diff(checkIn, "day"));
-            dispatch(setSubTotal(stayDuration * price));
             dispatch(setPrice(price));
             dispatch(setCheckInDate(checkIn.format("MM/DD/YYYY")));
             dispatch(setCheckOutDate(checkOut.format("MM/DD/YYYY")));
-            dispatch(setSubTotal(bookingSubTotal));
+            dispatch(setSubTotal(stayDuration * price));
             dispatch(setTotalDays(stayDuration));
-            dispatch(setFinalTotal(finalCharge))
+            dispatch(setFinalTotal(finalCharge));
         }
     },[checkIn, checkOut, stayDuration, price, bookingSubTotal, finalCharge, dispatch]);
 

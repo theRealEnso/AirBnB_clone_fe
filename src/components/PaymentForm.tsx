@@ -22,7 +22,10 @@ import {
     setNumberOfInfants, 
     setNumberOfPets, 
     setCheckInDate, 
-    setCheckOutDate 
+    setCheckOutDate,
+    setTotalDays,
+    setSubTotal,
+    setFinalTotal, 
 } from "../redux/bookings/booking-reducer";
 
 //import components from Stripe
@@ -34,6 +37,9 @@ import { Layout, LayoutObject } from "@stripe/stripe-js";
 import { MoonLoader } from "react-spinners";
 
 import { useCreateBookingMutation } from "../api/api-slice";
+
+// ** typescript types **
+import { BookingDetails } from "./SummaryViewer";
 
 //define stripe typescript types for the PaymentElement component
 type PaymentElementProps = {
@@ -51,11 +57,11 @@ type PaymentFormProps = {
     firstName: string,
     lastName: string,
     email: string,
-    id: string,
+    id: string;
+    bookingDetails?: BookingDetails;
 };
 
-
-export const PaymentForm = ({firstName, lastName, email, id}: PaymentFormProps) => {
+export const PaymentForm = ({firstName, lastName, email, id, bookingDetails}: PaymentFormProps) => {
     console.log(id);
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -121,7 +127,10 @@ export const PaymentForm = ({firstName, lastName, email, id}: PaymentFormProps) 
         dispatch(setNumberOfPets(0));
         dispatch(setCheckInDate(""));
         dispatch(setCheckOutDate(""));
-    }
+        dispatch(setSubTotal(0));
+        dispatch(setFinalTotal(0));
+        dispatch(setTotalDays(0));
+    };
 
     const handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
@@ -193,6 +202,7 @@ export const PaymentForm = ({firstName, lastName, email, id}: PaymentFormProps) 
                     numberOfChildren,
                     numberOfInfants,
                     numberOfPets,
+                    paymentIntentId: response.paymentIntent.id,
                 }).unwrap();
 
                 if(bookingResponse){
@@ -231,7 +241,12 @@ export const PaymentForm = ({firstName, lastName, email, id}: PaymentFormProps) 
                 className="bg-primary text-white font-sans font-semibold text-base rounded-md border-0 px-4 py-3 cursor-pointer block transition-all duration-200 ease-in-out shadow-md shadow-black/10 w-full hover:contrast-115 disabled:opacity-50 disabled:cursor-default flex items-center justify-center"
                 >
                 <span id="button-text">
-                    {isLoading ? <MoonLoader size={10}></MoonLoader> : "Pay now"}
+                    {
+                        isLoading 
+                        ? <MoonLoader size={10}></MoonLoader>
+                        : bookingDetails ? "Save Changes" 
+                        : "Pay now"
+                    }
                 </span>
             </button>
             {/* Show any error or success messages */}

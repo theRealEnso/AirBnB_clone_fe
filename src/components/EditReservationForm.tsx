@@ -4,7 +4,18 @@ import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 
 //import redux actions
-import { setNumberOfAdults, setNumberOfChildren, setNumberOfInfants, setNumberOfPets, setCheckInDate, setCheckOutDate, setPrice, setFinalTotal, setTotalDays, } from "../redux/bookings/booking-reducer";
+import { 
+    setNumberOfAdults, 
+    setNumberOfChildren, 
+    setNumberOfInfants, 
+    setNumberOfPets, 
+    setCheckInDate, 
+    setCheckOutDate, 
+    setPrice, 
+    setSubTotal, 
+    setFinalTotal, 
+    setTotalDays, 
+} from "../redux/bookings/booking-reducer";
 
 //import redux selectors
 import { 
@@ -58,6 +69,8 @@ export const EditReservationForm = () => {
             dispatch(setCheckInDate(bookingDetails.checkInDate));
             dispatch(setCheckOutDate(bookingDetails.checkOutDate));
             dispatch(setPrice(bookingDetails.place.price));
+            dispatch(setSubTotal(bookingDetails.place.price * bookingDetails.numberOfNights));
+            dispatch(setTotalDays(bookingDetails.numberOfNights))
             dispatch(setFinalTotal(bookingDetails.finalTotal));
         }
     }, [bookingDetails, dispatch])
@@ -249,7 +262,7 @@ export const EditReservationForm = () => {
                         <div className="mt-8">
                             {/* ok to reinitialize the elements provider and pass client secret as options locally in the component even though it already wraps the entire app in main.tsx file */}
                             <Elements stripe={stripePromise} options={{clientSecret}}>
-                                <PaymentForm firstName={firstName} lastName={lastName} email={email} id={id}></PaymentForm>
+                                <PaymentForm firstName={firstName} lastName={lastName} email={email} id={id} bookingDetails={bookingDetails}></PaymentForm>
                             </Elements>
                             
                         </div>

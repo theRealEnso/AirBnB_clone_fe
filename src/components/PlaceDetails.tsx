@@ -1,11 +1,8 @@
 import { useEffect, useState, useRef} from "react";
 
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 import { useParams } from "react-router-dom";
-
-//import redux action
-import { setPlace } from "../redux/places/places-reducer";
 
 //import redux selector
 import { selectPlace } from "../redux/places/places-selector";
@@ -31,12 +28,11 @@ export type PhotoProps = {
 
 export const PlaceDetails = () => {
     const currentPlace = useSelector(selectPlace);
-    const dispatch = useDispatch();
     const {placeId} = useParams();
     // console.log(placeId);
 
 
-    const {data: placeDetails, isLoading, isSuccess} = useGetPlaceDetailsQuery(placeId);
+    const {data: placeDetails, isLoading,} = useGetPlaceDetailsQuery(placeId);
     // console.log(placeDetails);
 
     const {data: reservedDatesArray} = useGetReservedDatesQuery(placeId);
@@ -54,7 +50,7 @@ export const PlaceDetails = () => {
 
     useEffect(() => {
         if(reservedDatesArray){
-            const formattedDatesArray = reservedDatesArray.map((date) => {
+            const formattedDatesArray = reservedDatesArray.map((date: Dayjs | null) => {
                 return dayjs(date);
             });
 

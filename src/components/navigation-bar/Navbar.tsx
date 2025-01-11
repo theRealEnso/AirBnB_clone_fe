@@ -14,6 +14,9 @@ import {
     setNumberOfPets,
     setCheckInDate,
     setCheckOutDate,
+    setSubTotal,
+    setFinalTotal,
+    setTotalDays,
 
 } from "../../redux/bookings/booking-reducer";
 
@@ -47,6 +50,9 @@ const Navbar = () => {
         dispatch(setNumberOfPets(0));
         dispatch(setCheckInDate(""));
         dispatch(setCheckOutDate(""));
+        dispatch(setSubTotal(0));
+        dispatch(setFinalTotal(0));
+        dispatch(setTotalDays(0));
     }
 
     const returnToHome = async () => {
